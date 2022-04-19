@@ -1,0 +1,19 @@
+{
+  "name": "rfp2202-pizza-party",
+  "version": "1.0.0",
+  "description": "FEC project",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SDC-PizzaParty/SDC.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SDC-PizzaParty/SDC/issues"
+  },
+  "homepage": "https://github.com/SDC-PizzaParty/SDC#readme"
+}
