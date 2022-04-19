@@ -4,7 +4,8 @@
   "description": "FEC project",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "npx nodemon server"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,14 @@
   "bugs": {
     "url": "https://github.com/SDC-PizzaParty/SDC/issues"
   },
-  "homepage": "https://github.com/SDC-PizzaParty/SDC#readme"
+  "homepage": "https://github.com/SDC-PizzaParty/SDC#readme",
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.13.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
+  }
 }
