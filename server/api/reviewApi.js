@@ -4,5 +4,10 @@ const express = require('express');
 
 const app = express();
 
-app.listen(process.env.REVIEW_PORT);
-console.log('Review API server listening on:', process.env.REVIEW_PORT);
+app.use('/', (req, res) => {
+  console.log('[REVIEWS]: Incoming request from routing server:', req.url);
+  res.send('Response from Reviews API');
+});
+
+app.listen(process.env.REVIEWS_PORT);
+console.log('[REVIEWS]: Reviews API server listening on:', process.env.REVIEWS_PORT);

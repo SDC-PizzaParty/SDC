@@ -12,8 +12,9 @@ app.use('/', (req, res) => {
 app.listen(process.env.PRODUCT_PORT);
 console.log('[PRODUCT]: Product API server listening on:', process.env.PRODUCT_PORT);
 
-module.exports = (req, res) => {
-  // This request is coming from the routing file
-  console.log('incoming request to PRODUCT API', req.url, req.method, req.port);
-  res.send('response from PRODUCT API MIDDLEWARE');
-};
+// For middleware app (not our use case now):
+// module.exports = (req, res) => {
+//   // This request is coming from the routing file
+//   console.log('incoming request to PRODUCT API', req.url, req.method, req.port);
+//   res.send('response from PRODUCT API MIDDLEWARE');
+// };
