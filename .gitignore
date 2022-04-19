@@ -1,0 +1,8 @@
+*.pem
+.env
+
+dist/
+
+*.map
+
+package-lock.json
