@@ -8,3 +8,5 @@ dist/
 *.map
 
 package-lock.json
+
+sample_data/
