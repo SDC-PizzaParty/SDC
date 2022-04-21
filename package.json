@@ -6,7 +6,7 @@
   "scripts": {
     "test": "test",
     "start": "npx nodemon server",
-    "build-product-db": "psql -f database/products.sql"
+    "build-product-db": "psql -d sdc -f database/products.sql"
   },
   "repository": {
     "type": "git",
