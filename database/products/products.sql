@@ -1,3 +1,4 @@
+
 DROP TABLE IF EXISTS product;
 
 CREATE TABLE IF NOT EXISTS product (
@@ -29,7 +30,7 @@ CREATE TABLE IF NOT EXISTS styles (
   original_price    MONEY,
   default_style     BOOLEAN,
   FOREIGN KEY (product_id) REFERENCES product
-)
+);
 
 DROP TABLE IF EXISTS photos;
 
@@ -39,7 +40,7 @@ CREATE TABLE IF NOT EXISTS photos (
   url             TEXT,
   thumbnail_url   TEXT,
   FOREIGN KEY (style_id) REFERENCES styles
-)
+);
 
 DROP TABLE IF EXISTS skus;
 
@@ -49,28 +50,36 @@ CREATE TABLE IF NOT EXISTS skus (
   size        VARCHAR(128),
   quantity    INTEGER,
   FOREIGN KEY (style_id) REFERENCES styles
-)
+);
 
 DROP TABLE IF EXISTS related;
 
 CREATE TABLE IF NOT EXISTS related (
-  id            SERIAL PRIMARY KEY,
-  product_id    INTEGER
-)
+  id                  SERIAL PRIMARY KEY,
+  product_id          INTEGER,
+  related_product_id  INTEGER,
+  FOREIGN KEY (product_id) REFERENCES product,
+  FOREIGN KEY (related_product_id) REFERENCES product
+);
 
-# ETL functions:
 
-COPY product FROM 'database/seed_data/product.csv'
+-- ETL functions (Only working with absolute path):
+/*
+COPY product FROM '/database/seed_data/product.csv'
   WITH CSV HEADER;
 
-COPY features FROM 'database/seed_data/features.csv'
+COPY features FROM '/database/seed_data/features.csv'
   WITH CSV HEADER;
 
-COPY styles FROM 'database/seed_data/styles.csv'
+COPY styles FROM '/database/seed_data/styles.csv'
   WITH CSV HEADER NULL 'null';
 
-COPY product FROM 'database/seed_data/skus.csv'
+COPY photos FROM '/database/seed_data/photos.csv'
   WITH CSV HEADER;
 
-COPY related FROM 'database/seed_data/related.csv'
+COPY skus FROM '/database/seed_data/skus.csv'
   WITH CSV HEADER;
+
+COPY related FROM '/database/seed_data/related.csv'
+  WITH CSV HEADER;
+*/
