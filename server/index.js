@@ -4,7 +4,7 @@ const express = require('express');
 const axios = require('axios');
 
 // Start the API servers: You can comment out the ones which you are not using:
-require('./api/productApi');
+require('./api/product');
 require('./api/qaApi');
 require('./api/reviewApi');
 
