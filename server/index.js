@@ -5,8 +5,8 @@ const axios = require('axios');
 
 // Start the API servers: You can comment out the ones which you are not using:
 require('./api/product');
-require('./api/qaApi');
-require('./api/reviewApi');
+// require('./api/qaApi');
+// require('./api/reviewApi');
 
 // Server URL
 const URL = 'http://127.0.0.1';
