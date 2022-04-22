@@ -5,6 +5,13 @@ const models = require('../models');
 
 const app = express();
 
+app.get('/test/:productId', (req, res) => {
+  models.product.getProductById(req.params.productId)
+    .then(() => {
+      res.send();
+    });
+});
+
 app.get('/test', (req, res) => {
   const testQ = 'SELECT * FROM styles JOIN product ON product_id = product.id AND product.id = 10';
   models.product.benchmark(testQ)
