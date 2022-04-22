@@ -4,8 +4,26 @@ const db = require('../../database/product/db');
 const getFeaturesByProductId = (productId) => {
   const query = {
     name: 'fetch-features',
-    text: 'SELECT * FROM features WHERE product_id = $1',
+    text: 'SELECT feature, value FROM features WHERE product_id = $1',
     values: [productId],
+  };
+  return db.query(query);
+};
+
+const getPhotosByStyleId = (styleId) => {
+  const query = {
+    name: 'fetch-photos',
+    text: 'SELECT * from photos WHERE style_id = $1',
+    values: [styleId],
+  };
+  return db.query(query);
+};
+
+const getSkusByStyleId = (styleId) => {
+  const query = {
+    name: 'fetch-skus',
+    text: 'SELECT * from skus WHERE style_id = $1',
+    values: [styleId],
   };
   return db.query(query);
 };
@@ -18,7 +36,14 @@ const getStylesByProductId = (productId) => {
     text: 'SELECT * FROM styles WHERE product_id = $1',
     values: [productId],
   };
-  return db.query(query);
+  return Promise.all([
+    db.query(query),
+    getSkusByStyleId(productId),
+  ])
+    .then((results) => {
+      console.log('[PRODUCT MODEL]:', results[0].rows);
+      console.log('[PRODUCT MODEL]:', results[1].rows);
+    });
 };
 
 const getProductById = (productId) => {
