@@ -1,9 +1,21 @@
 /* eslint-disable no-console */
 require('dotenv').config();
 const express = require('express');
-const db = require('../../database/product/db');
+const models = require('../models');
 
 const app = express();
+
+app.get('/test', (req, res) => {
+  const testQ = 'SELECT * FROM styles JOIN product ON product_id = product.id AND product.id = 10';
+  models.product.benchmark(testQ)
+    .then((result) => {
+      console.log(result);
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
 app.use('/', (req, res) => {
   console.log('[PRODUCT]: Incoming request from routing server:', req.url);
