@@ -25,24 +25,64 @@ const getSkusByStyleId = (styleId) => {
     text: 'SELECT * from skus WHERE style_id = $1',
     values: [styleId],
   };
-  return db.query(query);
+  // results.rows -> [{ id: 25, style_id: 5, size: 'XS', quantity: 8 }, ...]
+  // want to transform to -> {25: {quantity: 8, size: 'XS'}, ...}
+  const skus = {};
+  return db.query(query)
+    .then((results) => {
+      results.rows.forEach((e) => {
+        skus[e.id] = {
+          quantity: e.quantity,
+          size: e.size,
+        };
+      });
+      return { skus };
+    })
+    .catch((err) => {
+      console.log('[PRODUCT MODEL]:', err);
+    });
+};
+
+const getStyleById = (styleId) => {
+  const query = {
+    name: 'fetch-style',
+    text: 'SELECT * from styles WHERE id = $1',
+    values: [styleId],
+  };
+
+  return Promise.all([
+    db.query(query),
+    getSkusByStyleId(styleId),
+  ])
+    .then((results) => {
+      const style = { ...results[0].rows[0], ...results[1] };
+      console.log('Got style:', style);
+      return style;
+    })
+    .catch((err) => {
+      console.log('[PRODUCT MODEL]:', err);
+    });
 };
 
 const getStylesByProductId = (productId) => {
   // For slow version: Need to build the style object here
   // using additional queries to photos and skus
+  const styles = {};
+  styles.product_id = productId;
+
   const query = {
-    name: 'fetch-styles',
-    text: 'SELECT * FROM styles WHERE product_id = $1',
+    name: 'fetch-style-ids',
+    text: 'SELECT id FROM styles WHERE product_id = $1',
     values: [productId],
   };
-  return Promise.all([
-    db.query(query),
-    getSkusByStyleId(productId),
-  ])
+
+  return db.query(query)
     .then((results) => {
-      console.log('[PRODUCT MODEL]:', results[0].rows);
-      console.log('[PRODUCT MODEL]:', results[1].rows);
+      // results are style ids
+
+    })
+    .catch((err) => {
+      console.log('[PRODUCT MODEL]:', err);
     });
 };
 
@@ -68,6 +108,10 @@ const getProductById = (productId) => {
       return err;
     });
 };
+
+module.exports.getStyleById = getStyleById;
+
+module.exports.getStylesByProductId = getStylesByProductId;
 
 module.exports.getProductById = getProductById;
 

@@ -5,10 +5,19 @@ const models = require('../models');
 
 const app = express();
 
-app.get('/test/:productId', (req, res) => {
-  models.product.getProductById(req.params.productId)
+// Primative query test routes -->
+
+app.get('/test/style/:styleId', (req, res) => {
+  models.product.getStyleById(req.params.styleId)
     .then(() => {
       res.send();
+    });
+});
+
+app.get('/test/:productId', (req, res) => {
+  models.product.getProductById(req.params.productId)
+    .then((product) => {
+      res.send(JSON.stringify(product));
     });
 });
 
