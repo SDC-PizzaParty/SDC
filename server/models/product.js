@@ -11,6 +11,8 @@ const getFeaturesByProductId = (productId) => {
 };
 
 const getStylesByProductId = (productId) => {
+  // For slow version: Need to build the style object here
+  // using additional queries to photos and skus
   const query = {
     name: 'fetch-styles',
     text: 'SELECT * FROM styles WHERE product_id = $1',
@@ -28,13 +30,17 @@ const getProductById = (productId) => {
   return Promise.all([
     db.query(query),
     getFeaturesByProductId(productId),
+    getStylesByProductId(productId),
   ])
     .then((results) => {
-      console.log('[PRODUCT MODEL]:', results[0].rows[0]);
-      console.log('[PRODUCT MODEL]:', results[1].rows);
+      const product = results[0].rows[0];
+      product.features = results[1].rows;
+      console.log('[PRODUCT MODEL]: Product:', product);
+      return product;
     })
     .catch((err) => {
       console.log('[PRODUCT MODEL]:', err);
+      return err;
     });
 };
 

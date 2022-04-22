@@ -12,18 +12,6 @@ app.get('/test/:productId', (req, res) => {
     });
 });
 
-app.get('/test', (req, res) => {
-  const testQ = 'SELECT * FROM styles JOIN product ON product_id = product.id AND product.id = 10';
-  models.product.benchmark(testQ)
-    .then((result) => {
-      console.log(result);
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
 app.use('/', (req, res) => {
   console.log('[PRODUCT]: Incoming request from routing server:', req.url);
   res.send('Response from Product API');

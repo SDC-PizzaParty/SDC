@@ -12,12 +12,12 @@ const connection = {
 const pool = new Pool(connection);
 
 // Test query:
-pool.query('SELECT * FROM product WHERE id=10')
-  .then((result) => {
-    console.log('[PRODUCT DB]: Connected to DB', result.rows[0]);
-  })
-  .catch((err) => {
-    console.log('[PRODUCT DB]:', err);
-  });
+// pool.query('SELECT * FROM product WHERE id=10')
+//   .then((result) => {
+//     console.log('[PRODUCT DB]: Connected to DB', result.rows[0]);
+//   })
+//   .catch((err) => {
+//     console.log('[PRODUCT DB]:', err);
+//   });
 
 module.exports.query = (text, params) => pool.query(text, params);
