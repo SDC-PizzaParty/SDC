@@ -79,7 +79,7 @@ SELECT skus.id, quantity, size, name, original_price, sale_price, default_style,
   ```
   SELECT styles.id, skus.id, photos.id, size FROM skus INNER JOIN styles ON style_id = styles.id INNER JOIN photos ON photos.style_id = skus.style_id AND styles.id = 5;
   -->
-  style | sku | p | size
+  sty | sku | p | siz
   ----+----+----+------
     5 | 25 | 25 | XS
     5 | 26 | 25 | S
@@ -122,7 +122,17 @@ SELECT skus.id, quantity, size, name, original_price, sale_price, default_style,
 
 # 4/23/21
 
-## Importance of testing at this point:
-Is finally starting to become aparent. I want to write Tests (with a capital 'T') on my un-optimized API that test its basic functionality before I do my optimizations.
+## Testing:
+The importance of testing finally starting to become aparent. I want to write Tests (with a capital 'T') on my un-optimized API that test its basic functionality before I do my optimizations.
 - The tests should still be viable with the optimized API.
 - Saves times troubleshooting issues that are not related to optimization.
+I'm gonna try to write some basic tests.
+- Today I learned that you need to set the property "jest" to `true` in the `env` object of the `.eslintrc.js` file so that the jest functions are not linted.
+  - This is because we're not explicitly importing the functions such as 'test' and 'expect' etc.
+
+### What to test for:
+- Check that there is a response from the route
+- Check that when the response data is parsed, it contains an object with a property called 'product_id'
+
+## Notes for deployment:
+- Can I import my seeded database to AWS somehow? Or do I need to deal with using these CSVs and seeding on the server?

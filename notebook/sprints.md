@@ -55,10 +55,18 @@ product: {
 - [ ] Can I get the product AND its features in one query?
 
 ### Testing:
-- [ ] Install a testing suite
+- [x] Install a testing suite
+  - Gonna use Jest
+- [ ] Complete Jest getting started guide
 - [ ] Create a test that tests the API for a response
+  - Gonna use the 'request-promise' npm package
 - [ ] Get some sample data from the HR API to test against
 - [ ] *Don't test the front-end*
+- [ ] This is very chicken/egg, but it makes sense:
+  - Connect to the db (within the test suite)
+  - Make a sample get request (to the server)
+  - Test the response against querying from the database directly
+  - *This is testing the server specifically*
 
 
 ### Normalize the 'category' column of product into a category id and table of categories
