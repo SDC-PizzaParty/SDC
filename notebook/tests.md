@@ -268,3 +268,16 @@ Tests:
   ]}
   ```
 - I then realized that getting the "full" product with styles is not a function of the original API. . .
+
+# Capital 'T' Testing:
+Using mocha or something
+
+### Unit test (I think there is something called this?)
+What is some basic functionality I'm expecting from my API?
+- Fast response is not basic
+- Any response is basic:
+  - *Let's test for a response from the server*
+  - *We can also test the shape of that response against the response from the HR API*
+    - _Testing object shape sounds like a pain_
+- Remember to _not test the front-end_
+-

@@ -120,3 +120,9 @@ SELECT skus.id, quantity, size, name, original_price, sale_price, default_style,
   ```
   - Is it possible to pair this table down without losing any of the unique information? -> I dont think so. To get the unique skus and photos out, I now need to query THIS table. (So I have a result with unique values in the rows)
 
+# 4/23/21
+
+## Importance of testing at this point:
+Is finally starting to become aparent. I want to write Tests (with a capital 'T') on my un-optimized API that test its basic functionality before I do my optimizations.
+- The tests should still be viable with the optimized API.
+- Saves times troubleshooting issues that are not related to optimization.

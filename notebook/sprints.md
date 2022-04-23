@@ -54,6 +54,12 @@ product: {
 - [ ] Query for retrieving all skus associated with a product
 - [ ] Can I get the product AND its features in one query?
 
+### Testing:
+- [ ] Install a testing suite
+- [ ] Create a test that tests the API for a response
+- [ ] Get some sample data from the HR API to test against
+- [ ] *Don't test the front-end*
+
 
 ### Normalize the 'category' column of product into a category id and table of categories
 - Doing so will enable me to change the names of categories. i.e. shoes -> kicks.
