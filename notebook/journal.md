@@ -49,3 +49,74 @@
 ## Style getting:
 - Photos take a while to fetch from the db. Fetching a single style, with all of its skus and photos is taking a while now.
 - I made a get route to test style getting and will benchmark it now.
+
+## Developing better queries:
+- I'm going to start working on an optimized query for getting the styles by product ID since that one is the longest and I think I'll be able to see the biggest change in request time if I work on this one first;
+  - It currently does a minimum of 4 queries to get all the info needed.
+  - fetch-product -> fetch-style-ids -> (fetch-style -> fetch-skus -> fetch-photos) x n
+  - To break this down further, I'm going to make an 'equivalent' query to my get style by id method.
+
+### Query style + skus by style ID:
+- Selecting all skus for style `5`:
+```
+SELECT skus.id, quantity, size, name, original_price, sale_price, default_style FROM skus JOIN styles ON style_id = styles.id AND styles.id = 5;
+-->
+ id | quantity | size |       name       | original_price | sale_price | default_style
+----+----------+------+------------------+----------------+------------+---------------
+ 25 |        8 | XS   | Sky Blue & White |        $140.00 |    $100.00 | f
+ 26 |       16 | S    | Sky Blue & White |        $140.00 |    $100.00 | f
+ 27 |       17 | M    | Sky Blue & White |        $140.00 |    $100.00 | f
+ 28 |       10 | L    | Sky Blue & White |        $140.00 |    $100.00 | f
+ 29 |       15 | XL   | Sky Blue & White |        $140.00 |    $100.00 | f
+ 30 |        6 | XXL  | Sky Blue & White |        $140.00 |    $100.00 | f
+ ```
+- Lets add in the photos:
+```
+SELECT skus.id, quantity, size, name, original_price, sale_price, default_style, url, thumbnail_url FROM skus JOIN styles ON style_id = styles.id JOIN photos ON photos.style_id = skus.style_id AND styles.id = 5;
+```
+  - Result was that I x6'd the number of rows I got back. This is because there are 6 unique images for this style. 6 photos x 6 skus -> 36 results.
+  - Maybe I cant use a right join to reduce the amount of duplicate data coming back? Currently I'm getting 6 copies of each photo (one for each unique sku). What if I only want to keep the B portion of this join?
+  ```
+  SELECT styles.id, skus.id, photos.id, size FROM skus INNER JOIN styles ON style_id = styles.id INNER JOIN photos ON photos.style_id = skus.style_id AND styles.id = 5;
+  -->
+  style | sku | p | size
+  ----+----+----+------
+    5 | 25 | 25 | XS
+    5 | 26 | 25 | S
+    5 | 27 | 25 | M
+    5 | 28 | 25 | L
+    5 | 29 | 25 | XL
+    5 | 30 | 25 | XXL
+    5 | 25 | 27 | XS
+    5 | 26 | 27 | S
+    5 | 27 | 27 | M
+    5 | 28 | 27 | L
+    5 | 29 | 27 | XL
+    5 | 30 | 27 | XXL
+    5 | 25 | 28 | XS
+    5 | 26 | 28 | S
+    5 | 27 | 28 | M
+    5 | 28 | 28 | L
+    5 | 29 | 28 | XL
+    5 | 30 | 28 | XXL
+    5 | 25 | 29 | XS
+    5 | 26 | 29 | S
+    5 | 27 | 29 | M
+    5 | 28 | 29 | L
+    5 | 29 | 29 | XL
+    5 | 30 | 29 | XXL
+    5 | 25 | 30 | XS
+    5 | 26 | 30 | S
+    5 | 27 | 30 | M
+    5 | 28 | 30 | L
+    5 | 29 | 30 | XL
+    5 | 30 | 30 | XXL
+    5 | 25 | 26 | XS
+    5 | 26 | 26 | S
+    5 | 27 | 26 | M
+    5 | 28 | 26 | L
+    5 | 29 | 26 | XL
+    5 | 30 | 26 | XXL
+  ```
+  - Is it possible to pair this table down without losing any of the unique information? -> I dont think so. To get the unique skus and photos out, I now need to query THIS table. (So I have a result with unique values in the rows)
+

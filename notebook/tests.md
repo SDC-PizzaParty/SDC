@@ -81,10 +81,12 @@
   ```
   SELECT id FROM style WHERE product_id = id
   ```
-    - Then for each style id, get the style
+    - Then for each style id, get the style like in above (photos, skus, style)
+  - In total: minumum of 4 queries
+
 Tests:
 - I made a route that combines all of the necessary data to create a complete array of styles for any particular product:
-- Request: `127.0.0.1:3666/test/styles/5`
+- Request: `127.0.0.1:3666/test/5/styles`
   - Response time: `1.412111s`
   - Full response value:
   ```
@@ -133,7 +135,7 @@ Tests:
       }
     ]}
   ```
-- Markedly slower when styles contain photo urls: Request: `127.0.0.1:3666/test/styles/1`
+- Markedly slower when styles contain photo urls: Request: `127.0.0.1:3666/test/1/styles`
   - Response time: `2.024271s`
   - Response value:
   ```

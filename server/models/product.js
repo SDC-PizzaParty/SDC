@@ -51,7 +51,6 @@ const getStyleById = (styleId) => {
     text: 'SELECT * from styles WHERE id = $1',
     values: [styleId],
   };
-
   return Promise.all([
     db.query(query),
     getSkusByStyleId(styleId),

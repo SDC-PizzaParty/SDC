@@ -48,8 +48,14 @@ product: {
 
 - [ ] With getProductById fully completed, deploy to AWS to take benchmarks. Also plug it into the front-end
 
+### Practicing more complex queries:
+- [x] Generate query for retrieving all the photos associated with a product:
+`SELECT url FROM photos JOIN styles ON style_id = styles.id AND styles.product_id = 1;`
+- [ ] Query for retrieving all skus associated with a product
+- [ ] Can I get the product AND its features in one query?
 
-## Normalize the 'category' column of product into a category id and table of categories
+
+### Normalize the 'category' column of product into a category id and table of categories
 - Doing so will enable me to change the names of categories. i.e. shoes -> kicks.
 - Can I run a query on the product table that does something like this:
   - Take the unique values of the category column and put them into another table, with an index that auto increments
