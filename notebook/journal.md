@@ -31,8 +31,8 @@
 ## Using cURL to benchmark:
 - I can use cURL to benchmark my request speed using the -w flag
 - https://curl.se/docs/manpage.html#-w
-- Using -w "%{total_time}" gets me the total time of the request
-  - using -w "\n%{total_time}\n" makes it look prettier
+- Using `-w "%{total_time}"` gets me the total time of the request
+  - using `-w "\n%{total_time}\n"` makes it look prettier
 
 ## Getting the styles query:
 - The challenge is gonna be getting it into the correct shape:

@@ -13,13 +13,13 @@
 {"id":2000,"name":"Dorris Trousers","slogan":"Eum quo natus est necessitatibus ut aut quis.","description":"Nostrum beatae ut quidem fugiat doloremque. Voluptatem qui occaecati qui quo. Nostrum vitae praesentium perferendis consectetur consequatur dolores quas distinctio omnis. Ut et quia necessitatibus beatae voluptas delectus voluptatem. Ratione quod et aut maxime unde delectus.","category":"Trousers","default_price":"$466.00","features":[{"feature":"Lens","value":"Ultrasheen Gold"},{"feature":"Non-GMO","value":"null"}]}
 0.316061
 ```
-- The total time for the request is a blazing 0.31 seconds. Terrible.
+- The total time for the request is a blazing `0.316061` seconds. Terrible.
 
 ### Primative style by ID request:
 - The test route: `127.0.0.1:3666/test/style/:styleId`
-- Running `$ curl 127.0.0.1:3666/test/style/5 -w "\n%{time_total}\n"`
+- Command `$ curl 127.0.0.1:3666/test/style/5 -w "\n%{time_total}\n"`
     - Response: `0.365`, Actually better than I thought
-- Running one that it probably not cached by postgres: `$ curl 127.0.0.1:3666/test/style/14 -w "\n%{time_total}\n"`
+- Running one that is probably not cached by postgres: `127.0.0.1:3666/test/style/14`
     - Response: `0.371`s, although there were no photos for this style. Photos seem to slow down the db a lot.
     - Content:
     ```
@@ -224,3 +224,4 @@
     }
   ]}
   ```
+- I then realized that getting the "full" product with styles is not a function of the original API. . .
