@@ -1,4 +1,6 @@
-### Primitive query (making multiple queries to db and building object in js):
+## Unoptimized API tests (making multiple queries to db and building object in js):
+
+### Primitive get product by ID request:
 - The test route: `127.0.0.1:3666/test/2001`
 - I'll be using cURL to test the API. I've written this route to return the stringified object it receives from the call to the product model module which interacts with the db module.
 - The test command:
@@ -17,6 +19,18 @@
 0.316061
 ```
 - The total time for the request is a blazing `0.316061` seconds.
+- What this function is doing:
+  - This getter relies on making two queries:
+  ```
+  SELECT feature, value FROM features WHERE product_id = id
+  ```
+  - And extending the result onto the row given by:
+  ```
+  SELECT * FROM product WHERE id = id
+  ```
+  - We can probably get a lot faster by simply joining tables.
+    - Probably even faster if the tables are 'pre-joined'
+
 
 ### Primative style by ID request:
 - The test route: `127.0.0.1:3666/test/style/:styleId`
@@ -44,7 +58,31 @@
       photos: []
     }
     ```
+- Search method:
+  - Get the style by id:
+  ```
+  SELECT * FROM style WHERE id = id
+  ```
+  - Get the photos by style id:
+  ```
+  SELECT thumbnail_url, url FROM photos WHERE style_id = id
+  ```
+  - Get the skus by style id:
+  ```
+  SELECT * FROM skus WHERE style_id = id
+  ```
+    - I then have to do some data parsing to get the skus to be an object
+  - Bundle these together and send it
+
 ### Primative get styles by product id request:
+- Search method:
+  - This one is slowest because it relies on asynchronous queries. I need to make a query to get the next query parameters
+  - Get the style ids by product id:
+  ```
+  SELECT id FROM style WHERE product_id = id
+  ```
+    - Then for each style id, get the style
+Tests:
 - I made a route that combines all of the necessary data to create a complete array of styles for any particular product:
 - Request: `127.0.0.1:3666/test/styles/5`
   - Response time: `1.412111s`
