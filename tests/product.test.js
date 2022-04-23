@@ -6,7 +6,7 @@ const API_URL = 'http://127.0.0.1:3666';
 const API_TEST_URL = 'http://127.0.0.1:3666/test';
 const db = new Pool({ database: process.env.PRODUCT_DB });
 
-describe('Product API response', () => {
+describe('[PRODUCTS] API response', () => {
   test('Receives a response from the product API', () => {
     // const sum = (a, b) => a + b;
     // expect(sum(1, 2)).toBe(3);
@@ -17,31 +17,49 @@ describe('Product API response', () => {
   });
 });
 
-describe('Product API data retrieval [PRODUCTS]:', () => {
+describe('[PRODUCTS] Data retrieval:', () => {
   const testProductId = 5;
 
   test('Receives a Javascript object from the server', () => {
     request(`${API_TEST_URL}/${testProductId}`)
       .then((response) => {
-        const parsedResponse = JSON.parse(response);
-        expect(parsedResponse).toBeInstanceOf(Object);
-      });
+        const retrievedProduct = JSON.parse(response);
+        expect(retrievedProduct).toBeInstanceOf(Object);
+      })
+      .catch((err) => err);
   });
 
   test('Receives the item from the database given its product ID', () => {
     request(`${API_TEST_URL}/${testProductId}`)
       .then((response) => {
-        const parsedResponse = JSON.parse(response);
+        const retrievedProduct = JSON.parse(response);
         const queryString = 'SELECT * FROM product WHERE id = $1';
         const queryValues = [testProductId];
 
-        // Matchers to explore:
-        // toMatchObject -> match the general 'gist' of an object
-
         db.query(queryString, queryValues)
           .then((result) => {
-            expect(parsedResponse).toBe(result.rows[0]);
+            // Result of query will not have features attached
+            expect(retrievedProduct).toMatchObject(result.rows[0]);
           });
+      });
+  });
+});
+
+describe('[PRODUCTS] Retrieved product has the correct shape', () => {
+  const testProductId = 7;
+
+  test('Contains id, name, slogan, description, category, default_price, and features', () => {
+    request(`${API_TEST_URL}/${testProductId}`)
+      .then((response) => {
+        const retrievedProduct = JSON.parse(response);
+
+        expect(retrievedProduct).toHaveProperty('id');
+        expect(retrievedProduct).toHaveProperty('name');
+        expect(retrievedProduct).toHaveProperty('slogan');
+        expect(retrievedProduct).toHaveProperty('description');
+        expect(retrievedProduct).toHaveProperty('category');
+        expect(retrievedProduct).toHaveProperty('default_price');
+        expect(retrievedProduct).toHaveProperty('features');
       });
   });
 });
