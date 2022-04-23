@@ -7,13 +7,23 @@ const app = express();
 
 // Primative query test routes -->
 
+// Individual style getter:
 app.get('/test/style/:styleId', (req, res) => {
   models.product.getStyleById(req.params.styleId)
-    .then(() => {
-      res.send();
+    .then((style) => {
+      res.send(JSON.stringify(style));
     });
 });
 
+// Get all styles of a product:
+app.get('/test/styles/:productId', (req, res) => {
+  models.product.getStylesByProductId(req.params.productId)
+    .then((styles) => {
+      res.send(JSON.stringify(styles));
+    });
+});
+
+// Get the entire product object:
 app.get('/test/:productId', (req, res) => {
   models.product.getProductById(req.params.productId)
     .then((product) => {

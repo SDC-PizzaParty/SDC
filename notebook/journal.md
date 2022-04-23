@@ -44,3 +44,8 @@
 - This one is quite invloved since it involves multiple queries for each product for every style
 - I've already written a getSku by Style ID method. I will now make a get skus by product ID method.
     - Actually I won't do that since it would incur another query. I will just build on my current getStylesMethod
+    - Added a getStyleById method. Product and style getters are essentiually the same.
+
+## Style getting:
+- Photos take a while to fetch from the db. Fetching a single style, with all of its skus and photos is taking a while now.
+- I made a get route to test style getting and will benchmark it now.

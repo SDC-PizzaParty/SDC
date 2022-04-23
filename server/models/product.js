@@ -13,10 +13,12 @@ const getFeaturesByProductId = (productId) => {
 const getPhotosByStyleId = (styleId) => {
   const query = {
     name: 'fetch-photos',
-    text: 'SELECT * from photos WHERE style_id = $1',
+    text: 'SELECT thumbnail_url, url from photos WHERE style_id = $1',
     values: [styleId],
   };
-  return db.query(query);
+
+  return db.query(query)
+    .then((result) => result.rows);
 };
 
 const getSkusByStyleId = (styleId) => {
@@ -53,10 +55,15 @@ const getStyleById = (styleId) => {
   return Promise.all([
     db.query(query),
     getSkusByStyleId(styleId),
+    getPhotosByStyleId(styleId),
   ])
     .then((results) => {
-      const style = { ...results[0].rows[0], ...results[1] };
-      console.log('Got style:', style);
+      const style = {
+        ...results[0].rows[0],
+        ...results[1],
+        photos: results[2],
+      };
+      console.log('[PRODUCT MODEL] Style:', style);
       return style;
     })
     .catch((err) => {
@@ -67,19 +74,28 @@ const getStyleById = (styleId) => {
 const getStylesByProductId = (productId) => {
   // For slow version: Need to build the style object here
   // using additional queries to photos and skus
-  const styles = {};
-  styles.product_id = productId;
 
   const query = {
     name: 'fetch-style-ids',
     text: 'SELECT id FROM styles WHERE product_id = $1',
     values: [productId],
+    rowMode: 'array',
   };
 
   return db.query(query)
-    .then((results) => {
-      // results are style ids
-
+    // eslint-disable-next-line arrow-body-style
+    .then((result) => {
+      // console.log('[PRODUCT MODEL]: Style IDs:', result.rows);
+      // -> Style IDs: [ [ 26 ], [ 27 ], [ 28 ], [ 29 ] ] -> need to destructure
+      return Promise.all(result.rows.map(([id]) => getStyleById(id)))
+        .then((results) => {
+          const styles = {
+            product_id: productId,
+            results,
+          };
+          console.log('[PRODUCT MODEL]: Got styles', styles);
+          return styles;
+        });
     })
     .catch((err) => {
       console.log('[PRODUCT MODEL]:', err);

@@ -39,3 +39,6 @@ product: {
 - Can I run a query on the product table that does something like this:
   - Take the unique values of the category column and put them into another table, with an index that auto increments
 
+- [x] With getStyleById completed, create a getStylesByProductId method and use it to create the completed getProductById method. This will be the completed getter for benchmarking
+
+- [ ] With getProductById fully completed, deploy to AWS to take benchmarks. Also plug it into the front-end
