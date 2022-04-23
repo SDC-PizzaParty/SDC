@@ -1,5 +1,7 @@
 ### Primitive query (making multiple queries to db and building object in js):
-- The test request:
+- The test route: `127.0.0.1:3666/test/2001`
+- I'll be using cURL to test the API. I've written this route to return the stringified object it receives from the call to the product model module which interacts with the db module.
+- The test command:
 `$ curl 127.0.0.1:3666/test/2001`
 - Response:
 ```
@@ -8,12 +10,13 @@
 - The response is accurate as far as I can tell so that's good.
 - Command for the speed test:
 `$ curl 127.0.0.1:3666/test/2001 -w "\n%{time_total}\n"`
+  - Using the `-w` cURL flag to write out information after a completed transfer. I can give it a template string to print out certain variables. Here I'm getting `total_time`
 - Response:
 ```
 {"id":2000,"name":"Dorris Trousers","slogan":"Eum quo natus est necessitatibus ut aut quis.","description":"Nostrum beatae ut quidem fugiat doloremque. Voluptatem qui occaecati qui quo. Nostrum vitae praesentium perferendis consectetur consequatur dolores quas distinctio omnis. Ut et quia necessitatibus beatae voluptas delectus voluptatem. Ratione quod et aut maxime unde delectus.","category":"Trousers","default_price":"$466.00","features":[{"feature":"Lens","value":"Ultrasheen Gold"},{"feature":"Non-GMO","value":"null"}]}
 0.316061
 ```
-- The total time for the request is a blazing `0.316061` seconds. Terrible.
+- The total time for the request is a blazing `0.316061` seconds.
 
 ### Primative style by ID request:
 - The test route: `127.0.0.1:3666/test/style/:styleId`
@@ -162,7 +165,7 @@
   ]}
   ```
 
-### Primative full product request:
+### Primative full product request (unnecessary):
 - Request: `127.0.0.1:3666/test/5`
   - Response time: `1.393812s`
   - Response value:
