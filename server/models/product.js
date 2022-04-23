@@ -110,13 +110,11 @@ const getProductById = (productId) => {
   return Promise.all([
     db.query(query),
     getFeaturesByProductId(productId),
-    getStylesByProductId(productId),
   ])
     .then((results) => {
       const product = {
         ...results[0].rows[0],
         features: results[1],
-        ...results[2],
       };
       console.log('[PRODUCT MODEL]: Product:', product);
       return product;

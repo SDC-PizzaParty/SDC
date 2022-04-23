@@ -16,7 +16,7 @@ app.get('/test/style/:styleId', (req, res) => {
 });
 
 // Get all styles of a product:
-app.get('/test/styles/:productId', (req, res) => {
+app.get('/test/:productId/styles', (req, res) => {
   models.product.getStylesByProductId(req.params.productId)
     .then((styles) => {
       res.send(JSON.stringify(styles));
