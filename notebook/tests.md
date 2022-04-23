@@ -161,3 +161,66 @@
     }
   ]}
   ```
+
+### Primative full product request:
+- Request: `127.0.0.1:3666/test/5`
+  - Response time: `1.393812s`
+  - Response value:
+  ```
+  {
+  id: 5,
+  name: 'Heir Force Ones',
+  slogan: 'A sneaker dynasty',
+  description: "Now where da boxes where I keep mine? You should peep mine, maybe once or twice but never three times. I'm just a sneaker pro, I love Pumas and shell toes, but can't nothin compare to a fresh crispy white pearl",
+  category: 'Kicks',
+  default_price: '$99.00',
+  features: [
+    { feature: 'Sole', value: 'Rubber' },
+    { feature: 'Material', value: 'FullControlSkin' },
+    { feature: 'Mid-Sole', value: 'ControlSupport Arch Bridge' },
+    { feature: 'Stitching', value: 'Double Stitch' }
+  ],
+  product_id: '5',
+  results: [
+    {
+      id: 26,
+      product_id: 5,
+      name: 'White & White',
+      sale_price: null,
+      original_price: '$99.00',
+      default_style: true,
+      skus: [Object],
+      photos: []
+    },
+    {
+      id: 27,
+      product_id: 5,
+      name: 'White & Red',
+      sale_price: null,
+      original_price: '$99.00',
+      default_style: false,
+      skus: [Object],
+      photos: []
+    },
+    {
+      id: 28,
+      product_id: 5,
+      name: 'White & Black',
+      sale_price: null,
+      original_price: '$99.00',
+      default_style: false,
+      skus: [Object],
+      photos: []
+    },
+    {
+      id: 29,
+      product_id: 5,
+      name: 'White & Blue',
+      sale_price: null,
+      original_price: '$99.00',
+      default_style: false,
+      skus: [Object],
+      photos: []
+    }
+  ]}
+  ```

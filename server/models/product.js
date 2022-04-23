@@ -7,7 +7,8 @@ const getFeaturesByProductId = (productId) => {
     text: 'SELECT feature, value FROM features WHERE product_id = $1',
     values: [productId],
   };
-  return db.query(query);
+  return db.query(query)
+    .then((result) => result.rows);
 };
 
 const getPhotosByStyleId = (styleId) => {
@@ -16,7 +17,6 @@ const getPhotosByStyleId = (styleId) => {
     text: 'SELECT thumbnail_url, url from photos WHERE style_id = $1',
     values: [styleId],
   };
-
   return db.query(query)
     .then((result) => result.rows);
 };
@@ -63,7 +63,7 @@ const getStyleById = (styleId) => {
         ...results[1],
         photos: results[2],
       };
-      console.log('[PRODUCT MODEL] Style:', style);
+      // console.log('[PRODUCT MODEL] Style:', style);
       return style;
     })
     .catch((err) => {
@@ -74,7 +74,6 @@ const getStyleById = (styleId) => {
 const getStylesByProductId = (productId) => {
   // For slow version: Need to build the style object here
   // using additional queries to photos and skus
-
   const query = {
     name: 'fetch-style-ids',
     text: 'SELECT id FROM styles WHERE product_id = $1',
@@ -86,14 +85,14 @@ const getStylesByProductId = (productId) => {
     // eslint-disable-next-line arrow-body-style
     .then((result) => {
       // console.log('[PRODUCT MODEL]: Style IDs:', result.rows);
-      // -> Style IDs: [ [ 26 ], [ 27 ], [ 28 ], [ 29 ] ] -> need to destructure
+      // rows -> [ [ 26 ], [ 27 ], [ 28 ], [ 29 ] ] -> need to destructure
       return Promise.all(result.rows.map(([id]) => getStyleById(id)))
         .then((results) => {
           const styles = {
             product_id: productId,
             results,
           };
-          console.log('[PRODUCT MODEL]: Got styles', styles);
+          // console.log('[PRODUCT MODEL]: Got styles', styles);
           return styles;
         });
     })
@@ -114,8 +113,11 @@ const getProductById = (productId) => {
     getStylesByProductId(productId),
   ])
     .then((results) => {
-      const product = results[0].rows[0];
-      product.features = results[1].rows;
+      const product = {
+        ...results[0].rows[0],
+        features: results[1],
+        ...results[2],
+      };
       console.log('[PRODUCT MODEL]: Product:', product);
       return product;
     })
