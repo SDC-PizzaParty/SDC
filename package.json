@@ -4,7 +4,7 @@
   "description": "FEC project",
   "main": "index.js",
   "scripts": {
-    "test": "jest --forceExit",
+    "test": "jest",
     "start": "npx nodemon server",
     "seed-product-db": "psql -d sdc -f database/products/products.sql",
     "start:db": "psql sdc"

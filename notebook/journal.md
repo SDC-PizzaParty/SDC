@@ -142,3 +142,11 @@ I'm gonna try to write some basic tests.
 ## Full-stack
 - I probably want to plug in the front-end to my unoptimized back-end today. This might give me a little bit more insight into the type of unit tests I'll need for my back-end before moving on to optimization.
 - I'll continue practicing SQL syntax and joins whenever I have time today. It's starting to become a little more natural. Mocking out tables by hand is really helpful so I'll do that some more.
+
+## Testing
+- In the middle of plugging in the front-end I realized that I needed more unit tests. I then stumbled across the `time` option that can be provided in the node `requests` module. When `time` is set to `true` then a bunch of useful properties are added to the response object:
+  - `elapsedTime` Duration of the entire request/response in milliseconds (deprecated).
+  - `timings`: object containing various timings:
+    - `timings.connect`: timestamp when the server acknowledges TCP connection.
+    - `timings.response`: First bytes are received from the server
+    - `timings.end` Last bytes are received from server *This is probably our jam*

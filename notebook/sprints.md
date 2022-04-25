@@ -57,16 +57,18 @@ product: {
 ### Testing:
 - [x] Install a testing suite
   - Gonna use Jest
-- [ ] Complete Jest getting started guide
-- [ ] Create a test that tests the API for a response
+- [x] Complete Jest getting started guide
+- [x] Create a test that tests the API for a response
   - Gonna use the 'request-promise' npm package
 - [ ] Get some sample data from the HR API to test against
-- [ ] *Don't test the front-end*
-- [ ] This is very chicken/egg, but it makes sense:
+- [x] *Don't test the front-end*
+- [x] This is very chicken/egg, but it makes sense:
   - Connect to the db (within the test suite)
   - Make a sample get request (to the server)
   - Test the response against querying from the database directly
   - *This is testing the server specifically*
+- [ ] Write unit tests for styles:
+  - [ ]
 
 ### Plugging in the front-end:
 - [ ] Change the routes on the front-end to communicate with my service

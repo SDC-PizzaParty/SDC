@@ -3,10 +3,9 @@ const request = require('request-promise');
 const { Pool } = require('pg');
 
 const API_URL = 'http://127.0.0.1:3666';
-const API_TEST_URL = 'http://127.0.0.1:3666/test';
 const db = new Pool({ database: process.env.PRODUCT_DB });
 
-describe('[PRODUCTS] API response', () => {
+describe('[PRODUCTS] API response:', () => {
   test('Receives a response from the product API', () => {
     // const sum = (a, b) => a + b;
     // expect(sum(1, 2)).toBe(3);
@@ -21,7 +20,7 @@ describe('[PRODUCTS] Data retrieval:', () => {
   const testProductId = 5;
 
   test('Receives a Javascript object from the server', () => {
-    request(`${API_TEST_URL}/${testProductId}`)
+    request(`${API_URL}/products/${testProductId}`)
       .then((response) => {
         const retrievedProduct = JSON.parse(response);
         expect(retrievedProduct).toBeInstanceOf(Object);
@@ -30,7 +29,7 @@ describe('[PRODUCTS] Data retrieval:', () => {
   });
 
   test('Receives the item from the database given its product ID', () => {
-    request(`${API_TEST_URL}/${testProductId}`)
+    request(`${API_URL}/products/${testProductId}`)
       .then((response) => {
         const retrievedProduct = JSON.parse(response);
         const queryString = 'SELECT * FROM product WHERE id = $1';
@@ -45,11 +44,14 @@ describe('[PRODUCTS] Data retrieval:', () => {
   });
 });
 
-describe('[PRODUCTS] Retrieved product has the correct shape', () => {
+describe('[PRODUCTS] Retrieved product has the correct shape:', () => {
   const testProductId = 7;
 
   test('Contains id, name, slogan, description, category, default_price, and features', () => {
-    request(`${API_TEST_URL}/${testProductId}`)
+    request({
+      url: `${API_URL}/products/${testProductId}`,
+      time: true,
+    })
       .then((response) => {
         const retrievedProduct = JSON.parse(response);
 
@@ -59,7 +61,28 @@ describe('[PRODUCTS] Retrieved product has the correct shape', () => {
         expect(retrievedProduct).toHaveProperty('description');
         expect(retrievedProduct).toHaveProperty('category');
         expect(retrievedProduct).toHaveProperty('default_price');
-        expect(retrievedProduct).toHaveProperty('features');
+        // expect(retrievedProduct).toHaveProperty('features');
       });
   });
+});
+
+describe('[STYLES] Retreives all the styles for a product given a product id:', () => {
+  const testProductId = 4;
+
+  test('Receives an object from the server', () => {
+    request(`${API_URL}/products/${testProductId}/styles`)
+      .then((response) => {
+        const styles = JSON.parse(response);
+        expect(styles).toBeInstanceOf(Object);
+      });
+  });
+
+  test('Received object contains a "results" array', () => {
+    request(`${API_URL}/products/${testProductId}/styles`)
+      .then((response) => {
+        const styles = JSON.parse(response);
+
+        expect(styles.results).toBeInstanceOf(Array);
+      })
+  })
 });

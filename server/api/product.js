@@ -8,7 +8,8 @@ const app = express();
 // Primative query test routes -->
 
 // Individual style getter:
-app.get('/test/style/:styleId', (req, res) => {
+app.get('/products/style/:styleId', (req, res) => {
+  console.log('\n[PRODUCT] Request for style:', req.params.styleId);
   models.product.getStyleById(req.params.styleId)
     .then((style) => {
       res.send(JSON.stringify(style));
@@ -16,7 +17,8 @@ app.get('/test/style/:styleId', (req, res) => {
 });
 
 // Get all styles of a product:
-app.get('/test/:productId/styles', (req, res) => {
+app.get('/products/:productId/styles', (req, res) => {
+  console.log('\n[PRODUCT] Request for styles from product:', req.params.productId);
   models.product.getStylesByProductId(req.params.productId)
     .then((styles) => {
       res.send(JSON.stringify(styles));
@@ -24,7 +26,8 @@ app.get('/test/:productId/styles', (req, res) => {
 });
 
 // Get the entire product object:
-app.get('/test/:productId', (req, res) => {
+app.get('/products/:productId', (req, res) => {
+  console.log('\n[PRODUCT] Request for product:', req.params.productId);
   models.product.getProductById(req.params.productId)
     .then((product) => {
       res.send(JSON.stringify(product));
