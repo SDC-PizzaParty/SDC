@@ -150,3 +150,6 @@ I'm gonna try to write some basic tests.
     - `timings.connect`: timestamp when the server acknowledges TCP connection.
     - `timings.response`: First bytes are received from the server
     - `timings.end` Last bytes are received from server *This is probably our jam*
+
+## My tests are not failing when they should
+- I am going to try using the non-promise version of requests. I have a feeling that this weird behavior might be due to the promise api
