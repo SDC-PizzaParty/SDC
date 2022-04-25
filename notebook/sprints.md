@@ -68,6 +68,12 @@ product: {
   - Test the response against querying from the database directly
   - *This is testing the server specifically*
 
+### Plugging in the front-end:
+- [ ] Change the routes on the front-end to communicate with my service
+- [ ] Document any errors
+- [ ] Add unit tests for any backend issues
+- [ ] Fix the errors
+
 
 ### Normalize the 'category' column of product into a category id and table of categories
 - Doing so will enable me to change the names of categories. i.e. shoes -> kicks.

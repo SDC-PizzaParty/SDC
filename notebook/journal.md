@@ -136,3 +136,9 @@ I'm gonna try to write some basic tests.
 
 ## Notes for deployment:
 - Can I import my seeded database to AWS somehow? Or do I need to deal with using these CSVs and seeding on the server?
+
+# 4/25/22
+
+## Full-stack
+- I probably want to plug in the front-end to my unoptimized back-end today. This might give me a little bit more insight into the type of unit tests I'll need for my back-end before moving on to optimization.
+- I'll continue practicing SQL syntax and joins whenever I have time today. It's starting to become a little more natural. Mocking out tables by hand is really helpful so I'll do that some more.
