@@ -1,9 +1,10 @@
 require('dotenv').config();
 const request = require('request');
-// const request = require('request-promise');
+const axios = require('axios');
 const { Pool } = require('pg');
 
 const API_URL = 'http://127.0.0.1:3666';
+const { OLD_API_URL, API_KEY } = process.env;
 const db = new Pool({ database: process.env.PRODUCT_DB });
 
 describe('[PRODUCTS] API response:', () => {
@@ -85,8 +86,7 @@ describe('[STYLES] Retreives all the styles for a product given a product id:', 
       const stylesFromServer = JSON.parse(response.body).results;
       db.query(query, [testProductId])
         .then((result) => {
-          const styleIdsFromDB = result.rows;
-          expect(stylesFromServer.length).toEqual(styleIdsFromDB.length);
+          expect(stylesFromServer.length).toEqual(result.rowCount);
         });
     });
   });
@@ -99,13 +99,13 @@ describe('[STYLES] Style object shape:', () => {
     request(`${API_URL}/products/${testProductId}/styles`, (err, response) => {
       const styles = JSON.parse(response.body);
 
-      expect(styles.results[0].toHaveProperty('name'));
-      expect(styles.results[0].toHaveProperty('original_price'));
-      expect(styles.results[0].toHaveProperty('sale_price'));
-      expect(styles.results[0].toHaveProperty('photos'));
+      expect(styles.results[0]).toHaveProperty('name');
+      expect(styles.results[0]).toHaveProperty('original_price');
+      expect(styles.results[0]).toHaveProperty('sale_price');
+      expect(styles.results[0]).toHaveProperty('photos');
       expect(styles.results[0].toHaveProperty('skus'));
-      expect(styles.results[0].toHaveProperty('default?'));
-      expect(styles.results[0].toHaveProperty('style_id'));
+      expect(styles.results[0]).toHaveProperty('default?');
+      expect(styles.results[0]).toHaveProperty('style_id');
     });
   });
 });

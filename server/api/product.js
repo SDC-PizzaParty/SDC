@@ -25,6 +25,15 @@ app.get('/products/:productId/styles', (req, res) => {
     });
 });
 
+// Get all related items of a product:
+app.get('/products/:productId/related', (req, res) => {
+  console.log('\n[PRODUCT] Request for related items for product:', req.params.productId);
+  models.product.getRelatedByProductId(req.params.productId)
+    .then((items) => {
+      res.send(JSON.stringify(items));
+    });
+});
+
 // Get the entire product object:
 app.get('/products/:productId', (req, res) => {
   console.log('\n[PRODUCT] Request for product:', req.params.productId);

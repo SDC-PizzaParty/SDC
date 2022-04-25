@@ -1,6 +1,16 @@
 /* eslint-disable no-console */
 const db = require('../../database/product/db');
 
+const getRelatedByProductId = (productId) => {
+  const query = {
+    text: 'SELECT related_product_id from related WHERE product_id = $1',
+    values: [productId],
+    rowMode: 'array',
+  };
+  return db.query(query)
+    .then((result) => result.rows.flat());
+};
+
 const getFeaturesByProductId = (productId) => {
   const query = {
     name: 'fetch-features',
@@ -48,7 +58,8 @@ const getSkusByStyleId = (styleId) => {
 const getStyleById = (styleId) => {
   const query = {
     name: 'fetch-style',
-    text: 'SELECT * from styles WHERE id = $1',
+    text: `SELECT id AS style_id, name, original_price, sale_price,
+      default_style AS "default?" from styles WHERE id = $1`,
     values: [styleId],
   };
   return Promise.all([
@@ -62,7 +73,7 @@ const getStyleById = (styleId) => {
         ...results[1],
         photos: results[2],
       };
-      // console.log('[PRODUCT MODEL] Style:', style);
+      console.log('[PRODUCT MODEL] Style:', style);
       return style;
     })
     .catch((err) => {
@@ -79,7 +90,6 @@ const getStylesByProductId = (productId) => {
     values: [productId],
     rowMode: 'array',
   };
-
   return db.query(query)
     // eslint-disable-next-line arrow-body-style
     .then((result) => {
@@ -124,12 +134,10 @@ const getProductById = (productId) => {
     });
 };
 
+module.exports.getRelatedByProductId = getRelatedByProductId;
 module.exports.getStyleById = getStyleById;
-
 module.exports.getStylesByProductId = getStylesByProductId;
-
 module.exports.getProductById = getProductById;
-
 module.exports.benchmark = (queryString, params) => {
   const query = `EXPLAIN ANALYZE ${queryString}`;
   // Expected result.rows[0]:
