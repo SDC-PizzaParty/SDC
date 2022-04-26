@@ -46,7 +46,10 @@ app.get('/products/:productId', (req, res) => {
 app.use('/products', (req, res) => {
   const { count, page } = req.query;
   console.log('[PRODUCT]: Request for products:', count, page);
-  res.send('Response from Product API');
+  models.product.getProducts(page, count)
+    .then((products) => {
+      res.send(JSON.stringify(products));
+    });
 });
 
 app.use('/', (req, res) => {
