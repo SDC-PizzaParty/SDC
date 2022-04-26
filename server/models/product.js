@@ -134,6 +134,19 @@ const getProductById = (productId) => {
     });
 };
 
+const getProducts = (page = 1, count = 5) => {
+  const lowerLimit = (page * count) - (count + 1);
+  const upperLimit = (page * count);
+  const query = {
+    text: `SELECT id, name, slogan, description, category, default_price
+      FROM product WHERE id >= $1 AND id <= $2`,
+    values: [lowerLimit, upperLimit],
+  };
+  return db.query(query)
+    .then((results) => results.rows);
+};
+
+module.exports.getProducts = getProducts;
 module.exports.getRelatedByProductId = getRelatedByProductId;
 module.exports.getStyleById = getStyleById;
 module.exports.getStylesByProductId = getStylesByProductId;

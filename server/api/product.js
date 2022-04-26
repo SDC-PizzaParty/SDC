@@ -43,6 +43,12 @@ app.get('/products/:productId', (req, res) => {
     });
 });
 
+app.use('/products', (req, res) => {
+  const { count, page } = req.query;
+  console.log('[PRODUCT]: Request for products:', count, page);
+  res.send('Response from Product API');
+});
+
 app.use('/', (req, res) => {
   console.log('[PRODUCT]: Incoming request from routing server:', req.url);
   res.send('Response from Product API');

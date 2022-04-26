@@ -244,3 +244,15 @@ SELECT name, category FROM p_f GROUP BY name, category;
   ![Style stress indexed 10rps](https://user-images.githubusercontent.com/5285119/165223928-dcd9c636-ce02-48f2-881a-b4e0d77e9109.png)
   - At 100 RPS:
   ![Styles stress test 100rps](https://user-images.githubusercontent.com/5285119/165224161-33368f77-6039-4567-b736-288955fe8ca6.png)
+
+# 4/26/22
+
+### Planning for the day:
+- Write a route for /products -> to return paginated results of products
+  - Add it to my benchmark table
+- Create a benchmark table (10, 100, 1000) for pre-optimized values
+  - Create a new table for each optimization
+- Deploy to AWS
+  - Use `nginx` for load balancing
+  - Then do scaling on deployed version (this can probably be work for tomorrow)
+
