@@ -155,6 +155,7 @@ I'm gonna try to write some basic tests.
 - It doesn't seem like Jest is waiting for the tests to complete before moving on the next one.
   - Or maybe its receiving the object and the shap, but the values are still streaming.
 - I just learned that there are tools to perform the local service stress test for me: k6 is one of them.
+- **Also, I don't need to be hooking up the front-end today...**
 
 #### New technologies:
 - node request
@@ -168,8 +169,7 @@ I'm gonna try to write some basic tests.
 ![My first k6 test](https://user-images.githubusercontent.com/5285119/165193321-5aa1ff0c-7abb-40d8-b454-9b18b6a18f6b.png)
 - Attemping to test with 10 virtual users loading product 1 with all of its styles:
 ![K6 test with styles](https://user-images.githubusercontent.com/5285119/165202588-25bd502d-4884-42e3-a8ad-e39ed903aff2.png)
-- Attempting 10 RPS stress test on styles route only: Average time: `20.1s`
-![K6 10 RPS to styles](https://user-images.githubusercontent.com/5285119/165212336-a47058fa-e90f-41ba-96c1-9a287307e97f.png)
+- Attempted 10 RPS stress test on styles route only: Average time: `20.1s`. I talk about this below.
 
 ## Optimizing queries:
 ### Using views to get product data:
@@ -217,14 +217,8 @@ SELECT name, category FROM p_f GROUP BY name, category;
 - After indexing features by product_id:
 ![K6 product 10RPS optimized](https://user-images.githubusercontent.com/5285119/165222722-3b0e4037-577d-4dc5-bffd-fae8cb8b2d31.png)
 
-### Using views to get style data:
-- This query is more complicated and invloves joining 2 or 3 tables: photos, skus, and styles.
-- The tables are probably the least CPU intensive to join are skus and styles, since photos contain large strings and there can be an unlimited number of photos for each style id.
-
-- skus are much more predictable in that there probably won't be that much variation in sizes and the data is generally small.
-
 ### Speeding up photo getting
-- Getting one column for one style id takes 341ms.
+- Getting one column for one style id takes `341ms`.
 ```
   Gather  (cost=1000.00..239282.60 rows=15 width=128) (actual time=196.095..341.473 rows=6 loops=1)
    Workers Planned: 2
@@ -236,3 +230,17 @@ SELECT name, category FROM p_f GROUP BY name, category;
  Execution Time: 341.815 ms
 (8 rows)
 ```
+- After indexing by style_id: `0.229ms`
+
+### Using views to get style data:
+- This query is more complicated and invloves joining 2 or 3 tables: photos, skus, and styles.
+- K6 stress test on my unoptimized api at 10 rps:
+![K6 10 RPS to styles](https://user-images.githubusercontent.com/5285119/165212336-a47058fa-e90f-41ba-96c1-9a287307e97f.png)
+  - Average time: `20.1s`
+- The tables are probably the least CPU intensive to join are skus and styles, since photos contain large strings and there can be an unlimited number of photos for each style id.
+- skus are much more predictable in that there probably won't be that much variation in sizes and the data is generally small.
+- First step will be to index skus and photos by style_id.
+  - stress test @ 10 RPS after indexing:
+  ![Style stress indexed 10rps](https://user-images.githubusercontent.com/5285119/165223928-dcd9c636-ce02-48f2-881a-b4e0d77e9109.png)
+  - At 100 RPS:
+  ![Styles stress test 100rps](https://user-images.githubusercontent.com/5285119/165224161-33368f77-6039-4567-b736-288955fe8ca6.png)
