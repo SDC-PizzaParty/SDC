@@ -73,7 +73,7 @@ const getStyleById = (styleId) => {
         ...results[1],
         photos: results[2],
       };
-      console.log('[PRODUCT MODEL] Style:', style);
+      // console.log('[PRODUCT MODEL] Style:', style);
       return style;
     })
     .catch((err) => {
@@ -125,7 +125,7 @@ const getProductById = (productId) => {
         ...results[0].rows[0],
         features: results[1],
       };
-      console.log('[PRODUCT MODEL]: Product:', product);
+      // console.log('[PRODUCT MODEL]: Product:', product);
       return product;
     })
     .catch((err) => {

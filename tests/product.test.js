@@ -1,10 +1,10 @@
 require('dotenv').config();
 const request = require('request');
-const axios = require('axios');
+// const axios = require('axios');
 const { Pool } = require('pg');
 
 const API_URL = 'http://127.0.0.1:3666';
-const { OLD_API_URL, API_KEY } = process.env;
+// const { OLD_API_URL, API_KEY } = process.env;
 const db = new Pool({ database: process.env.PRODUCT_DB });
 
 describe('[PRODUCTS] API response:', () => {
@@ -35,7 +35,9 @@ describe('[PRODUCTS] Data retrieval:', () => {
       db.query(queryString, [testProductId])
         .then((result) => {
           // Result of query will not have features attached
-          expect(retrievedProduct).toMatchObject(result.rows[0]);
+          const productFromDB = result.rows[0];
+          expect(retrievedProduct).toMatchObject(productFromDB);
+          expect(retrievedProduct.name).toEqual(productFromDB.name);
         });
     });
   });
@@ -103,7 +105,7 @@ describe('[STYLES] Style object shape:', () => {
       expect(styles.results[0]).toHaveProperty('original_price');
       expect(styles.results[0]).toHaveProperty('sale_price');
       expect(styles.results[0]).toHaveProperty('photos');
-      expect(styles.results[0].toHaveProperty('skus'));
+      expect(styles.results[0]).toHaveProperty('skus');
       expect(styles.results[0]).toHaveProperty('default?');
       expect(styles.results[0]).toHaveProperty('style_id');
     });

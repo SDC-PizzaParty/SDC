@@ -68,7 +68,8 @@ product: {
   - Test the response against querying from the database directly
   - *This is testing the server specifically*
 - [ ] Write unit tests for styles:
-  - [ ]
+- [ ] Complete the k6 getting started
+  - [ ] Write k6 scripts for local testing
 
 ### Plugging in the front-end:
 - [ ] Change the routes on the front-end to communicate with my service

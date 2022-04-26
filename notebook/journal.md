@@ -150,6 +150,20 @@ I'm gonna try to write some basic tests.
     - `timings.connect`: timestamp when the server acknowledges TCP connection.
     - `timings.response`: First bytes are received from the server
     - `timings.end` Last bytes are received from server *This is probably our jam*
+- I also just realized that I could have been using axios for the tests, but I'm glad I got to practice using a new module. . .
+- I'm wondering if axios supports a setHeader for all requests type of thing like jQuery does.
+- It doesn't seem like Jest is waiting for the tests to complete before moving on the next one.
+  - Or maybe its receiving the object and the shap, but the values are still streaming.
+- I just learned that there are tools to perform the local service stress test for me: k6 is one of them.
+
+#### New technologies:
+- node request
+- k6
 
 ## My tests are not failing when they should
 - I am going to try using the non-promise version of requests. I have a feeling that this weird behavior might be due to the promise api
+
+## Using K6 to stress test my service
+- I have to work through the getting started guide, but I've made my first test (simple call to product id 1)
+![My first k6 test](https://user-images.githubusercontent.com/5285119/165193321-5aa1ff0c-7abb-40d8-b454-9b18b6a18f6b.png)
+-
