@@ -1,7 +1,6 @@
 /* eslint-disable func-names */
 /* eslint-disable import/no-unresolved */
 import http from 'k6/http';
-import { sleep } from 'k6';
 
 export const options = {
   // virtual users:
@@ -18,6 +17,6 @@ export const options = {
 };
 
 export default function () {
-  // http.get(`http://127.0.0.1:3666/products/${Math.floor(Math.random() * 99999)}`);
-  http.get(`http://127.0.0.1:3666/products/${Math.floor(Math.random() * 100000)}/styles`);
+  http.get(`http://127.0.0.1:3666/products/${Math.floor(Math.random() * 100000)}`);
+  // http.get(`http://127.0.0.1:3666/products/${Math.floor(Math.random() * 100000)}/styles`);
 }

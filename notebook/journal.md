@@ -170,3 +170,68 @@ I'm gonna try to write some basic tests.
 ![K6 test with styles](https://user-images.githubusercontent.com/5285119/165202588-25bd502d-4884-42e3-a8ad-e39ed903aff2.png)
 - Attempting 10 RPS stress test on styles route only: Average time: `20.1s`
 ![K6 10 RPS to styles](https://user-images.githubusercontent.com/5285119/165212336-a47058fa-e90f-41ba-96c1-9a287307e97f.png)
+
+## Optimizing queries:
+### Using views to get product data:
+- K6 stress test for product request at 10 RPS:
+![K6 10 RPS products only](https://user-images.githubusercontent.com/5285119/165212343-068d68cc-e752-4fac-aae4-5915d7ba7621.png)
+  - `86.89ms`, not bad as styles, but still not under `50ms`
+- Creating the view as a query:
+```
+CREATE VIEW p_f AS SELECT name, category, feature, value FROM product INNER JOIN features ON product.id = product_id AND product.id = 1;
+```
+- This results in the saved join table:
+```
+SELECT * FROM p_f;
+    name     | category | feature | value
+-------------+----------+---------+--------
+ Camo Onesie | Jackets  | Fabric  | Canvas
+ Camo Onesie | Jackets  | Buttons | Brass
+(2 rows)
+```
+- That I can now query for specific information:
+```
+SELECT name, category FROM p_f LIMIT 1;
+    name     | category
+-------------+----------
+ Camo Onesie | Jackets
+(1 row)
+
+SELECT feature, value FROM p_f;
+ feature | value
+---------+--------
+ Fabric  | Canvas
+ Buttons | Brass
+(2 rows)
+```
+- By using `GROUP BY` I can collapse rows of the result onto the given columns:
+```
+SELECT name, category FROM p_f GROUP BY name, category;
+    name     | category
+-------------+----------
+ Camo Onesie | Jackets
+(1 row)
+```
+- Now I only created one view in this example. if I pre-join the entire product/features tables then I can save one query. However, I would still need two queries to get the individual features and product data. Otherwise, I would need to separate the features data from the product data in javascript.
+- **For this optimization I'm simply going to index features product_id to speed up searching and use two queries.**
+- After indexing features by product_id:
+
+### Using views to get style data:
+- This query is more complicated and invloves joining 2 or 3 tables: photos, skus, and styles.
+- The tables are probably the least CPU intensive to join are skus and styles, since photos contain large strings and there can be an unlimited number of photos for each style id.
+
+- skus are much more predictable in that there probably won't be that much variation in sizes and the data is generally small.
+
+### Speeding up photo getting
+- Getting one column for one style id takes 341ms.
+```
+  Gather  (cost=1000.00..239282.60 rows=15 width=128) (actual time=196.095..341.473 rows=6 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Parallel Seq Scan on photos  (cost=0.00..238281.10 rows=6 width=128) (actual time=289.067..336.965 rows=2 loops=3)
+         Filter: (style_id = 6)
+         Rows Removed by Filter: 1885152
+ Planning Time: 0.043 ms
+ Execution Time: 341.815 ms
+(8 rows)
+```
