@@ -215,6 +215,7 @@ SELECT name, category FROM p_f GROUP BY name, category;
 - Now I only created one view in this example. if I pre-join the entire product/features tables then I can save one query. However, I would still need two queries to get the individual features and product data. Otherwise, I would need to separate the features data from the product data in javascript.
 - **For this optimization I'm simply going to index features product_id to speed up searching and use two queries.**
 - After indexing features by product_id:
+![K6 product 10RPS optimized](https://user-images.githubusercontent.com/5285119/165222722-3b0e4037-577d-4dc5-bffd-fae8cb8b2d31.png)
 
 ### Using views to get style data:
 - This query is more complicated and invloves joining 2 or 3 tables: photos, skus, and styles.
