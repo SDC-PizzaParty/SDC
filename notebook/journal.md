@@ -166,4 +166,5 @@ I'm gonna try to write some basic tests.
 ## Using K6 to stress test my service
 - I have to work through the getting started guide, but I've made my first test (simple call to product id 1)
 ![My first k6 test](https://user-images.githubusercontent.com/5285119/165193321-5aa1ff0c-7abb-40d8-b454-9b18b6a18f6b.png)
--
+- Attemping to test with 10 virtual users loading product 1 with all of its styles:
+![K6 test with styles](https://user-images.githubusercontent.com/5285119/165202588-25bd502d-4884-42e3-a8ad-e39ed903aff2.png)
