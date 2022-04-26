@@ -1,4 +1,3 @@
-# JOURNAL:
 
 # 4/21/22:
 - I had to figure out how to get node-postgres working.
@@ -256,3 +255,50 @@ SELECT name, category FROM p_f GROUP BY name, category;
   - Use `nginx` for load balancing
   - Then do scaling on deployed version (this can probably be work for tomorrow)
 
+### Keeping track of my stress tests:
+- I created a table to put stuff into:
+```
+Table "public.benchmarks"
+     Column     |  Type   |
+----------------+---------+----------
+ id             | integer | serial
+ optimization   | text    |
+ rps            | integer |
+ service        | text    |
+ total_duration | numeric |
+ fail_rate      | numeric | default=0
+```
+  - This should also make it easier to fish out for my journaling.
+
+### Updates to stress test script:
+```
+import http from 'k6/http';
+
+export const options = {
+  // virtual users:
+  scenarios: {
+    product_products_styles: {
+      executor: 'constant-arrival-rate',
+      rate: 10,
+      timeUnit: '1s',
+      duration: '30s',
+      preAllocatedVUs: 2,
+      maxVUs: 50,
+    },
+  },
+};
+
+export default function () {
+  // Un-comment to test
+  http.get(`http://127.0.0.1:3666/products?page=${Math.floor(Math.random() * 1000)}`);
+  // http.get(`http://127.0.0.1:3666/products/${Math.floor(Math.random() * 100000)}`);
+  // http.get(`http://127.0.0.1:3666/products/${Math.floor(Math.random() * 10000)}/styles`);
+}
+```
+- The above script does a few key things:
+  - Uses a random number to query for productId or page number
+  - Pings at a constant rate. In this case it's set to 10 RPS
+- I'm only testing these three routes because the fourth route (related items) is only responsible for fetching an array of numbers
+  - **explicitly: I'm not testing this part out of laziness. What could go wrong?**
+
+### I'm supposed to deploy today

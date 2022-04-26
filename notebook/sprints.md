@@ -4,7 +4,7 @@
 - [x] Complete getting started guide for pg module
   - There might be some knowledge I can glean from the setup that will be helpful to me when I begin to formulate my queries
 
-- [ ] Practice using VIEWS to query data
+- [x] Practice using VIEWS to query data
   - Views are basically queries
   - We query a query to get data from multiple tables
 
@@ -46,7 +46,9 @@ product: {
 
 - [x] With getStyleById completed, create a getStylesByProductId method and use it to create the completed getProductById method. This will be the completed getter for benchmarking
 
-- [ ] With getProductById fully completed, deploy to AWS to take benchmarks. Also plug it into the front-end
+- [x] Create a get products method that takes in a page and count parameter and fetches `count` number of results per `page` and return a `page` of results as an array of product items.
+
+- [ ] With all routes completed, deploy to AWS to take benchmarks.
 
 ### Practicing more complex queries:
 - [x] Generate query for retrieving all the photos associated with a product:
@@ -67,9 +69,9 @@ product: {
   - Make a sample get request (to the server)
   - Test the response against querying from the database directly
   - *This is testing the server specifically*
-- [ ] Write unit tests for styles:
-- [ ] Complete the k6 getting started
-  - [ ] Write k6 scripts for local testing
+- [x] Write unit tests for styles:
+- [x] Complete the k6 getting started
+  - [x] Write k6 scripts for local testing
 
 ### Plugging in the front-end:
 - [ ] Change the routes on the front-end to communicate with my service

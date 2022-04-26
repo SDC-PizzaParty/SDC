@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS features (
   FOREIGN KEY (product_id) REFERENCES product
 );
 
+CREATE INDEX ON features (product_id);
+
 DROP TABLE IF EXISTS styles;
 
 CREATE TABLE IF NOT EXISTS styles (
@@ -32,6 +34,8 @@ CREATE TABLE IF NOT EXISTS styles (
   FOREIGN KEY (product_id) REFERENCES product
 );
 
+CREATE INDEX ON styles (product_id);
+
 DROP TABLE IF EXISTS photos;
 
 CREATE TABLE IF NOT EXISTS photos (
@@ -41,6 +45,8 @@ CREATE TABLE IF NOT EXISTS photos (
   thumbnail_url   TEXT,
   FOREIGN KEY (style_id) REFERENCES styles
 );
+
+CREATE INDEX ON photos (style_id);
 
 DROP TABLE IF EXISTS skus;
 
@@ -52,6 +58,8 @@ CREATE TABLE IF NOT EXISTS skus (
   FOREIGN KEY (style_id) REFERENCES styles
 );
 
+CREATE INDEX ON skus (style_id);
+
 DROP TABLE IF EXISTS related;
 
 CREATE TABLE IF NOT EXISTS related (
@@ -61,6 +69,8 @@ CREATE TABLE IF NOT EXISTS related (
   FOREIGN KEY (product_id) REFERENCES product,
   FOREIGN KEY (related_product_id) REFERENCES product
 );
+
+CREATE INDEX ON related (product_id);
 
 
 -- ETL functions (Only working with absolute path):

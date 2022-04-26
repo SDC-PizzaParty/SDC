@@ -137,7 +137,7 @@ const getProductById = (productId) => {
 const getProducts = (page = 1, count = 5) => {
   const lowerLimit = (page * count) - count + 1;
   const upperLimit = (page * count);
-  console.log(`Getting ids >= ${lowerLimit} and <= ${upperLimit}`);
+  // console.log(`[PRODUCT MODEL]: Getting ids >= ${lowerLimit} and <= ${upperLimit}`);
   const query = {
     text: `SELECT id, name, slogan, description, category, default_price
       FROM product WHERE id >= $1 AND id <= $2`,

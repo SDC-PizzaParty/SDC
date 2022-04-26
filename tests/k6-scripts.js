@@ -5,9 +5,9 @@ import http from 'k6/http';
 export const options = {
   // virtual users:
   scenarios: {
-    products_styles: {
+    product_products_styles: {
       executor: 'constant-arrival-rate',
-      rate: 100,
+      rate: 10,
       timeUnit: '1s',
       duration: '30s',
       preAllocatedVUs: 2,
@@ -17,6 +17,7 @@ export const options = {
 };
 
 export default function () {
+  http.get(`http://127.0.0.1:3666/products?page=${Math.floor(Math.random() * 1000)}`);
   // http.get(`http://127.0.0.1:3666/products/${Math.floor(Math.random() * 100000)}`);
-  http.get(`http://127.0.0.1:3666/products/${Math.floor(Math.random() * 10000)}/styles`);
+  // http.get(`http://127.0.0.1:3666/products/${Math.floor(Math.random() * 10000)}/styles`);
 }
