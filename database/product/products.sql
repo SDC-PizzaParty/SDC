@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS product (
   slogan          TEXT,
   description     TEXT,
   category        VARCHAR(80),
-  default_price   MONEY,
+  default_price   MONEY
 );
 
 DROP TABLE IF EXISTS features;

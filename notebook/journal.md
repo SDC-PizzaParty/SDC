@@ -302,3 +302,15 @@ export default function () {
   - **explicitly: I'm not testing this part out of laziness. What could go wrong?**
 
 ### I'm supposed to deploy today
+- [ ] How do I load my database?
+  - [x] Install postgres on the ubuntu server
+  - [x] Add a postgres user account 'ubuntu'
+  - [x] Build my tables using my schema file in this repo
+  - [ ] Host the CSV's somewhere (temporarily) so I can seed from them?
+    - I'm not sure how this step works
+    - Can I use fileson my local machine when interacting with EC2 instance via SSH?
+    - I'm trying to figure out the keywords to Google. .
+    - Upon some searching I eventually stumbled across this guide for transferring files to an EC2 instance in Windows. The example was using a command line program called 'PSCP'. I googled PSCP and saw videos with titles of the gist of "how to copy files remote"
+    - This led to my current google results page for searching: `how to copy files to a remote server mac` These results seem promising because it mentions a command line program called 'SCP'. . . This sounds very similar to 'PSCP' so I think i found what I'm looking for.
+      - I clicked a link to open the `scp command man page` and it opened a terminal window with this beautiful guide:
+      ![SCP man page](https://user-images.githubusercontent.com/5285119/165405088-15536490-6408-436c-9c9d-39b10a56ced2.png)
