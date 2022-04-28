@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "npx nodemon server",
+    "start": "npx nodemon server/api/product.js",
     "seed-product-db": "psql -d sdc -f database/products/products.sql",
     "start:db": "psql sdc"
   },

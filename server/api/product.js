@@ -5,6 +5,8 @@ const models = require('../models');
 
 const app = express();
 
+app.use(express.static('loader'));
+
 // Primative query test routes -->
 
 // Individual style getter:
