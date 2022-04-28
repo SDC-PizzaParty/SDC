@@ -322,3 +322,113 @@ export default function () {
   scp -i 'path/to/pem-key.pem' path/to/csv.csv ubuntu@ec2-xx-XX-xx-XX.amazon.aws.com:/home/ubuntu/SDC-1
   ```
     - This did the trick
+  #### Just learned about `pg_dump`
+  - Apparently Postgres already thought about a way to like transfer your database to another server. Genius.
+  - Amazon also pointed this out to me: https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/migrate-an-on-premises-postgresql-database-to-amazon-ec2.html
+
+  #### A unique challenge today:
+  Is doing everything through the command line on the EC2 instance. It's quite fun and intriguing.
+
+# 4/27/22
+
+### Planning for the day:
+- [ ] Set up an EC2 instance with just the database
+- [ ] Set up and additional EC2 instance with the service
+- [ ] Connect the service to the deployed database
+
+### Deploying my database:
+- I used `pg_dump` to backup my database to a sql file. It was `2.6gb` so I think it contains all the data. This is something I was unsure about before.
+  - Command for this was very simple. I used the defaults for everything:
+  - `$pg_dump sdc > db.sql`
+- I created a new EC2 instance running ubuntu with 8gb of storage.
+- Installed postgresql: `sudo apt install postgresql` using *EC2 Instance Connect*
+  - No need to install Node here
+- From my pc I used `scp` to send the backup database to my new EC2 instance: `scp -i new-key.pem db.sql ubuntu@ec2-xxx.amazonaws.com:/home/ubuntu`
+  - This took a while and I had to restart multiple times because my computer would go to sleep.
+- Back on the server, I had to do some additional psql setup:
+  - Postgres installs with a user `postgres` by default, so I wanted to create a new user called `ubuntu` so I can setup from it:
+  - Log in to `postgres` account on server: `$ sudo -i -u postgres`
+  - Open psql and create a new user with super powers:
+  ```
+  postgres~$ psql
+  >=# CREATE USER ubuntu WITH SUPERUSER;
+  CREATE USER
+  ```
+- Back on the server @ubuntu: I created a fresh database named 'sdc': `ubuntu~$ createdb sdc`
+- Then I loaded the newly created db using the script that I just dumped: `$ psql -d sdc -f db.sql`
+   - *Then I ran out of space*
+   - Next time increase the space on the EC2 volume first... Anyway:
+   - [Using this guide:](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recognize-expanded-volume-linux.html)
+   - Expand volume size from console
+   - `$ lsblk`
+   ```
+   NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+  loop0     7:0    0   25M  1 loop /snap/amazon-ssm-agent/4046
+  loop1     7:1    0 55.5M  1 loop /snap/core18/2253
+  loop2     7:2    0 61.9M  1 loop /snap/core20/1242
+  loop3     7:3    0 67.2M  1 loop /snap/lxd/21835
+  loop4     7:4    0 42.2M  1 loop /snap/snapd/14066
+  xvda    202:0    0   15G  0 disk
+  └─xvda1 202:1    0   15G  0 part /
+   ```
+   - `$ sudo growpart /dev/xvda 1`
+   - `$ sudo resize2fs /dev/root`
+   - check with: `$ df -h`
+- Created a user called `remote` in psql: `CREATE USER remote WITH PASSWORD 'i used a pw here';` that I will use to connect to the db remotely.
+
+### Connecting to my deployed database:
+- I know that postgres (by default) will run on port 5432, but what about authentication?
+  - [ ] Setup a password once I restore the db on EC2.
+- [ ] Lets try to first connect to it from my machine.
+  - [ ] I should be able to alter my Pool connection parameters in `db.js`
+  - [ ] Use environment variables so I don't publish my database location or whatever
+
+# 4/28/22
+
+## I came across this section of the postgresql for server administration
+- From within the EC2 instance:
+```
+sdc=# SELECT * FROM pg_file_settings;
+               sourcefile                | sourceline | seqno |            name            |                 setting                 | applied | error
+-----------------------------------------+------------+-------+----------------------------+-----------------------------------------+---------+-------
+ /etc/postgresql/12/main/postgresql.conf |         42 |     1 | data_directory             | /var/lib/postgresql/12/main             | t       |
+ /etc/postgresql/12/main/postgresql.conf |         44 |     2 | hba_file                   | /etc/postgresql/12/main/pg_hba.conf     | t       |
+ /etc/postgresql/12/main/postgresql.conf |         46 |     3 | ident_file                 | /etc/postgresql/12/main/pg_ident.conf   | t       |
+ /etc/postgresql/12/main/postgresql.conf |         50 |     4 | external_pid_file          | /var/run/postgresql/12-main.pid         | t       |
+ /etc/postgresql/12/main/postgresql.conf |         64 |     5 | port                       | 5432                                    | t       |
+ /etc/postgresql/12/main/postgresql.conf |         65 |     6 | max_connections            | 100                                     | t       |
+ /etc/postgresql/12/main/postgresql.conf |         67 |     7 | unix_socket_directories    | /var/run/postgresql                     | t       |
+ /etc/postgresql/12/main/postgresql.conf |        101 |     8 | ssl                        | on                                      | t       |
+ /etc/postgresql/12/main/postgresql.conf |        103 |     9 | ssl_cert_file              | /etc/ssl/certs/ssl-cert-snakeoil.pem    | t       |
+ /etc/postgresql/12/main/postgresql.conf |        105 |    10 | ssl_key_file               | /etc/ssl/private/ssl-cert-snakeoil.key  | t       |
+ /etc/postgresql/12/main/postgresql.conf |        122 |    11 | shared_buffers             | 128MB                                   | t       |
+ /etc/postgresql/12/main/postgresql.conf |        141 |    12 | dynamic_shared_memory_type | posix                                   | t       |
+ /etc/postgresql/12/main/postgresql.conf |        225 |    13 | max_wal_size               | 1GB                                     | t       |
+ /etc/postgresql/12/main/postgresql.conf |        226 |    14 | min_wal_size               | 80MB                                    | t       |
+ /etc/postgresql/12/main/postgresql.conf |        513 |    15 | log_line_prefix            | %m [%p] %q%u@%d                         | t       |
+ /etc/postgresql/12/main/postgresql.conf |        540 |    16 | log_timezone               | Etc/UTC                                 | t       |
+ /etc/postgresql/12/main/postgresql.conf |        546 |    17 | cluster_name               | 12/main                                 | t       |
+ /etc/postgresql/12/main/postgresql.conf |        562 |    18 | stats_temp_directory       | /var/run/postgresql/12-main.pg_stat_tmp | t       |
+ /etc/postgresql/12/main/postgresql.conf |        650 |    19 | datestyle                  | iso, mdy                                | t       |
+ /etc/postgresql/12/main/postgresql.conf |        652 |    20 | timezone                   | Etc/UTC                                 | t       |
+ /etc/postgresql/12/main/postgresql.conf |        666 |    21 | lc_messages                | C.UTF-8                                 | t       |
+ /etc/postgresql/12/main/postgresql.conf |        668 |    22 | lc_monetary                | C.UTF-8                                 | t       |
+ /etc/postgresql/12/main/postgresql.conf |        669 |    23 | lc_numeric                 | C.UTF-8                                 | t       |
+ /etc/postgresql/12/main/postgresql.conf |        670 |    24 | lc_time                    | C.UTF-8                                 | t       |
+ /etc/postgresql/12/main/postgresql.conf |        673 |    25 | default_text_search_config | pg_catalog.english                      | t       |
+(25 rows)
+```
+- I decided to take a look at the contents of the postgresql.conf file since I've seen a lot of mention to it in the documentation.
+- `nano /etc/postgresql/12/main/postgresql.conf`:
+  - (PHOTO)
+  - Some of the info I found interesting here were the listen_addresses (which i believe is where I open up to listening on the internet by adding 0.0.0.0)
+  - And that there is a pem key stored somewhere (which i would think is for some kind of authentication option)
+  - Attempting to write to this file using nano I got `permission denied`
+  - I did `sudo nano /etc/postgresql/12/main/postgresql.conf` then changed listen_addresses to include '0.0.0.0'
+  and that took.
+### Why i added 0.0.0.0 to postgresql.conf:
+- From the Postgres documentation Chapter 20.3.1: `The entry 0.0.0.0 allows listening for all IPv4 addresses`
+- From the conf file: `use '*' to enable all addresses`
+
+Awesome video explaining everything: https://youtu.be/LV2ooRnZqpg
+

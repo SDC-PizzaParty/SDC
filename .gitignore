@@ -12,3 +12,5 @@ package-lock.json
 sample_data/
 
 seed_data/
+
+db.sql
