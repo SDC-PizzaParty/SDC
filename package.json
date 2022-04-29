@@ -5,9 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "npx nodemon server",
-    "seed-product-db": "psql -d sdc -f database/products/products.sql",
-    "start:db": "psql sdc"
+    "start:service": "npx nodemon server/api/product.js",
+    "start:lb": "npx nodemon server"
   },
   "repository": {
     "type": "git",

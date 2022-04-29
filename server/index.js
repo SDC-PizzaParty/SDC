@@ -3,17 +3,11 @@ require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 
-// Start the API servers: You can comment out the ones which you are not using:
-require('./api/product');
-require('./api/product1');
-
-// Server URL:
-const URL = 'http://127.0.0.1';
 // In order to add more instances of the service add them to this list:
-const PRODUCT_URLS = [
-  `${URL}:${process.env.PRODUCT_PORT}`,
-  `${URL}:${process.env.PRODUCT_PORT_1}`,
-];
+const PRODUCT_URLS = require('./loadbalancer');
+
+console.log(PRODUCT_URLS);
+
 let currentServer = 0;
 
 const app = express();
@@ -40,5 +34,5 @@ app.use('/products', (req, res) => {
   console.log(currentServer);
 });
 
-app.listen(process.env.PORT);
-console.log('[Router]: Server listening on:', process.env.PORT);
+app.listen(process.env.LB_PORT);
+console.log('[Router]: Server listening on:', process.env.LB_PORT);

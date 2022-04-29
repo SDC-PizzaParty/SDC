@@ -438,4 +438,9 @@ Awesome video explaining everything: https://youtu.be/LV2ooRnZqpg
 - [x] Direct traffic through a third express app (index/router)
 - This split up nicely since my API uses a separated models component
 - K6 testing to see if anything improved:
-  - Not bad, I dont think theres a difference, but lets try on the server now
+  - Not bad, I dont think theres a difference, but lets try on the server now.
+  - I dont think there is any improvement
+
+## Load balancing with NGINX:
+- Resource: https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-open-source/index.html#prebuilt
+- I want to try load balancing with Node for a little bit longer before I resort to Nginx. It would be great if I could figure out what is wrong with mine.
