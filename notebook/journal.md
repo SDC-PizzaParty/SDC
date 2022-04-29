@@ -432,3 +432,10 @@ sdc=# SELECT * FROM pg_file_settings;
 
 Awesome video explaining everything: https://youtu.be/LV2ooRnZqpg
 
+## Creating a load balancer with node?
+- Can I create a node balancer that distributes incoming traffic one by one within the same repo?
+- [x] Create a copy of my product API (express app)
+- [x] Direct traffic through a third express app (index/router)
+- This split up nicely since my API uses a separated models component
+- K6 testing to see if anything improved:
+  - Not bad, I dont think theres a difference, but lets try on the server now

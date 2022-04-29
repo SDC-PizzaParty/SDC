@@ -17,7 +17,7 @@ export const options = {
 };
 
 export default function () {
-  // http.get(`http://127.0.0.1:3666/products?page=${Math.floor(Math.random() * 1000)}`);
-  // http.get(`http://127.0.0.1:3666/products/${Math.floor(Math.random() * 100000)}`);
-  http.get(`http://127.0.0.1:3666/products/${Math.floor(Math.random() * 1000)}/styles`);
+  http.get(`http://127.0.0.1:3005/products?page=${Math.floor(Math.random() * 1000)}`);
+  // http.get(`http://127.0.0.1:3005/products/${Math.floor(Math.random() * 100000)}`);
+  // http.get(`http://127.0.0.1:3005/products/${Math.floor(Math.random() * 1000)}/styles`);
 }
