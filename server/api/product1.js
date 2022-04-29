@@ -6,8 +6,6 @@ const models = require('../models');
 const app = express();
 const PORT = process.env.PRODUCT_PORT_1;
 
-app.use(express.static('loader'));
-
 // Primative query test routes -->
 
 // Individual style getter:

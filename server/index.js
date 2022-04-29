@@ -18,8 +18,9 @@ let currentServer = 0;
 
 const app = express();
 
-// Services routing: forwards request body to service, forwards response to client:
+app.use(express.static('loader'));
 
+// Services routing: forwards request body to service, forwards response to client:
 app.use('/products', (req, res) => {
   const url = PRODUCT_URLS[currentServer] + req.originalUrl;
   console.log('[Router]: Routing to:', url);
