@@ -444,3 +444,13 @@ Awesome video explaining everything: https://youtu.be/LV2ooRnZqpg
 ## Load balancing with NGINX:
 - Resource: https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-open-source/index.html#prebuilt
 - I want to try load balancing with Node for a little bit longer before I resort to Nginx. It would be great if I could figure out what is wrong with mine.
+
+## Back to db optimization:
+- Utilize Aggregate functions: https://www.postgresql.org/docs/9.5/functions-aggregate.html
+- Specifically json_agg in queries
+- Implement materialized views
+
+### Planning for the next two days:
+- I probably have enough time to refactor my db to utilize materialized views
+- Refactor to use aggregate functions
+- Plug in my load balancer

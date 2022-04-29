@@ -4,17 +4,15 @@ const { Pool } = require('pg');
 
 const connection = {
   database: process.env.PRODUCTION_DB_NAME,
-  // Add authentication here probably
   user: process.env.PRODUCTION_DB_USER,
   password: process.env.PRODUCTION_DB_PW,
   host: process.env.PRODUCTION_DB_HOST,
 };
 const pool = new Pool(connection);
 
-// Test query:
-pool.query('SELECT * FROM product WHERE id=10')
-  .then(() => {
-    console.log('[PRODUCT DB]: Connected to DB');
+pool.query('SELECT NOW()')
+  .then(({ rows }) => {
+    console.log('[PRODUCT DB]: Connected to DB:', rows[0]);
   })
   .catch((err) => {
     console.log('[PRODUCT DB]:', err);
