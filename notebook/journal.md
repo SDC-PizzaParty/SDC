@@ -527,6 +527,34 @@ SELECT json_object_agg(id, skus) FROM (SELECT id, quantity, size FROM skus WHERE
    "30" : {"id":30,"quantity":6,"size":"XXL"} }
 (1 row)
 ```
+- Here is inputting a json creation function within the SELECT clause:
+```
+SELECT json_object_agg(id, json_build_object('quantity', quantity, 'size', size)) FROM skus WHERE style_id = 5;
+        json_object_agg
+----------------------------------
+ { "25" : {"quantity" : 8, "size" : "XS"},
+   "26" : {"quantity" : 16, "size" : "S"},
+   "27" : {"quantity" : 17, "size" : "M"},
+   "28" : {"quantity" : 10, "size" : "L"},
+   "29" : {"quantity" : 15, "size" : "XL"},
+   "30" : {"quantity" : 6, "size" : "XXL"} }
+(1 row)
+```
+- Shape I want to match:
+```
+style: {
+  id: Number,
+  product_id: Number,
+  name: String,
+  original_price: Number,
+  sale_price: Number,
+  default: Boolean,
+  photos: Array,
+  skus: Array,
+}
+```
+- Lets try getting a single style with this newly formed skus object as one of the styles properties:
+
 
 
 ### Planning for the next two days:
