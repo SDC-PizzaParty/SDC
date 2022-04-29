@@ -15,7 +15,7 @@ app.use(express.static('loader'));
 // Services routing: forwards request body to service, forwards response to client:
 app.use('/products', (req, res) => {
   const url = API_URLS[currentServer] + req.originalUrl;
-  console.log('[Load balancer] Routing to:', url, `[${currentServer}]`);
+  // console.log('[Load balancer] Routing to:', url, `[${currentServer}]`);
   axios(url, {
     method: req.method,
     data: req.body,
