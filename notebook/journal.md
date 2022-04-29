@@ -450,7 +450,87 @@ Awesome video explaining everything: https://youtu.be/LV2ooRnZqpg
 - Specifically json_agg in queries
 - Implement materialized views
 
+### Aggregating rows into JSON array using json_agg() function
+- First let's explore collapsing the results of a query down to a single column.
+- `SELECT sty FROM (SELECT * FROM styles WHERE product_id = 5) AS sty;`
+```
+               sty
+----------------------------------
+ (26,5,"White & White",,$99.00,t)
+ (27,5,"White & Red",,$99.00,f)
+ (28,5,"White & Black",,$99.00,f)
+ (29,5,"White & Blue",,$99.00,f)
+(4 rows)
+```
+  - This query selects all columns of styles where product_id = 5 and gives the resulting row an alias of 'sty'
+  - We are then selecting all of the resulting 'sty's
+- I can kind of see this behaving like so:
+```
+SELECT * FROM styles WHERE product_id = 5;
+ id | p_id |     name
+----+------+---------------
+ 26 |    5 | White & White  = 'sty'
+ 27 |    5 | White & Red    = 'sty'
+ 28 |    5 | White & Black  = 'sty'
+ 29 |    5 | White & Blue   = 'sty'
+(4 rows)
+```
+  - Sort of like adding a property to the results of the query and then selecting for that property (which will result in coming back as a column)
+- Now if we json_agg() the results of `SELECT sty FROM (SELECT * FROM styles WHERE product_id = 5) AS sty;` We can turn the 4 returned rows into an array of JSON objects:
+```
+SELECT json_agg(sty) FROM (SELECT * FROM styles WHERE product_id = 5) AS sty;
+                   json_agg
+----------------------------------------------
+ [{"id":26,"p_id":5,"name":"White & White"}, +
+  {"id":27,"p_id":5,"name":"White & Red"},   +
+  {"id":28,"p_id":5,"name":"White & Black"}, +
+  {"id":29,"p_id":5,"name":"White & Blue"}]
+(1 row)
+```
+  - Notice the result is just one row.
+  - We can keep adding sub-queries into this to build up the object more
+- Let try fishing out all photo URLs from a particular style_id:
+```
+SELECT json_agg(pics) FROM (SELECT id, style_id AS "s_id", url name FROM photos WHERE style_id = 5) AS pics;
+                          json_agg
+-------------------------------------------------------------------
+ [{"id":25,"s_id":5,"name":"https://images.unsplash.com/25"}, +
+  {"id":26,"s_id":5,"name":"https://images.unsplash.com/26" , +
+  {"id":27,"s_id":5,"name":"https://images.unsplash.com/27"}, +
+  {"id":28,"s_id":5,"name":"https://images.unsplash.com/28"}, +
+  {"id":29,"s_id":5,"name":"https://images.unsplash.com/29"}, +
+  {"id":30,"s_id":5,"name":"https://images.unsplash.com/30"}]
+(1 row)
+```
+- And for skus:
+```
+SELECT json_agg(skus) FROM (SELECT quantity, size FROM skus WHERE style_id = 5) AS skus;
+            json_agg
+--------------------------------
+ [{"quantity":8,"size":"XS"},  +
+  {"quantity":16,"size":"S"},  +
+  {"quantity":17,"size":"M"},  +
+  {"quantity":10,"size":"L"},  +
+  {"quantity":15,"size":"XL"}, +
+  {"quantity":6,"size":"XXL"}]
+(1 row)
+```
+- Could we try nesting this array of objects in the style itself?
+- Lets try reformatting skus so that it comes back as a nested object instead of an array:
+```
+SELECT json_object_agg(id, skus) FROM (SELECT id, quantity, size FROM skus WHERE style_id = 5) AS skus;
+ { "25" : {"id":25,"quantity":8,"size":"XS"},
+   "26" : {"id":26,"quantity":16,"size":"S"},
+   "27" : {"id":27,"quantity":17,"size":"M"},
+   "28" : {"id":28,"quantity":10,"size":"L"},
+   "29" : {"id":29,"quantity":15,"size":"XL"},
+   "30" : {"id":30,"quantity":6,"size":"XXL"} }
+(1 row)
+```
+
+
 ### Planning for the next two days:
 - I probably have enough time to refactor my db to utilize materialized views
 - Refactor to use aggregate functions
 - Plug in my load balancer
+- It would be nice to add more unit/integration tests
