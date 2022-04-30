@@ -562,3 +562,19 @@ style: {
 - Refactor to use aggregate functions
 - Plug in my load balancer
 - It would be nice to add more unit/integration tests
+
+
+# 4/29/22
+
+## Load balancer was a success
+- With the Node load balancer I was able to achieve 1000RPS at around 70ms for each route EXCEPT `/products/:productID/styles`
+- I think that with a query optimization of the styles route I can hit 1000RPS
+- Styles by pid route can currently handle 600RPS
+  - Performance notiecably peters out around 700RPS. It isn't wavy though.
+
+## Load balancer optimizations
+- I removed console logging from the service applications, but a periodic health check would be nice
+- A ping to the service from the LB and response would be useful (to visualize, not sure how to use for performance)
+
+## Im going to use PGAdmin to structure my query
+Trying to figure out how to use json creation functions is kind of ridiculous using only the command line. I got a demo of pgAdmin and it looks like it could be extremely helpful.
