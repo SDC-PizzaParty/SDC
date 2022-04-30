@@ -5,6 +5,12 @@ const models = require('../models');
 
 const app = express();
 const PORT = process.env.PRODUCT_PORT;
+let beep = 0;
+
+const boop = (text = '') => {
+  beep = beep === 1000 ? 0 : beep + 1;
+  if (beep === 1000) { console.log('boop', text); }
+};
 
 // Individual style getter:
 app.get('/products/style/:styleId', (req, res) => {
@@ -18,6 +24,7 @@ app.get('/products/style/:styleId', (req, res) => {
 // Get all styles of a product:
 app.get('/products/:productId/styles', (req, res) => {
   // console.log('\n[PRODUCT] Request for styles from product:', req.params.productId);
+  boop('style');
   models.product.getStylesByProductId(req.params.productId)
     .then((styles) => {
       res.send(JSON.stringify(styles));
@@ -40,6 +47,7 @@ app.get('/products/:productId', (req, res) => {
     .then((product) => {
       res.send(JSON.stringify(product));
     });
+  boop('product');
 });
 
 app.use('/products', (req, res) => {
@@ -49,6 +57,7 @@ app.use('/products', (req, res) => {
     .then((products) => {
       res.send(JSON.stringify(products));
     });
+  boop();
 });
 
 app.use('/', (req, res) => {
