@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "npx nodemon server",
-    "start:lb": "npx nodemon server"
+    "start": "pm2 start server",
+    "cluster": "pm2 start server/api/product.js -i max",
+    "stop": "pm2 stop all",
+    "status": "pm2 ls"
   },
   "repository": {
     "type": "git",
