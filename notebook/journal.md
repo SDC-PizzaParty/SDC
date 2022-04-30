@@ -581,4 +581,62 @@ Trying to figure out how to use json creation functions is kind of ridiculous us
 
 ## Config
 My env file has grown a lot throughout the course of this project. I am learning a lot aboud configuration and when to store things within the environment.
-- [ ] Configure a way to verify loader IO easily
+- [x] Configure a way to verify loader IO easily
+  - I made a function that reads the loader.io key from environment variables, packages it up into a .txt file and serves it up as a static file when `server/index.js` is run.
+  - This seemed like a cool trick while I was still using nodemon. . .
+
+## Switching over to PM2 for single instance load balancing and running node
+
+## Continuation of query optimizations from yesterday
+- Shape I want to match:
+```
+style: {
+  id: Number,
+  product_id: Number,
+  name: String,
+  original_price: Number,
+  sale_price: Number,
+  default: Boolean,
+  photos: Array,
+  skus: Array,
+}
+```
+- Lets try getting a single style with this newly formed skus object as one of the styles properties:
+```
+SELECT
+	id AS "style_id",
+	name,
+	original_price,
+	sale_price,
+	default_style AS "default?",
+	(SELECT json_object_agg(id, json_build_object('quantity', quantity, 'size', size))
+		FROM skus WHERE style_id = s.id) AS skus,
+	(SELECT json_agg(ph)
+		FROM (SELECT url, thumbnail_url FROM photos WHERE style_id = s.id) AS ph) AS photos
+	FROM styles AS s WHERE s.product_id = 1;
+```
+  - Results in a table with two columns containing JSON objects.
+    - One style per row
+  - This has essentially one parsing step to do in js: assign the result of this query to the 'results' property of the 'styles' object returned to the user
+
+## Creating the materialized view:
+```
+CREATE MATERIALIZED VIEW full_style
+AS
+	SELECT
+		id AS "style_id",
+		name,
+		original_price,
+		sale_price,
+		default_style AS "default?",
+		(SELECT json_object_agg(id, json_build_object('quantity', quantity, 'size', size))
+			FROM skus WHERE style_id = s.id) AS skus,
+		(SELECT json_agg(ph)
+			FROM (SELECT url, thumbnail_url FROM photos WHERE style_id = s.id) AS ph) AS photos,
+		product_id
+		FROM styles AS s;
+```
+  - So I can select from this view using product_id: `SELECT * FROM full_style WHERE product_id = 1;`
+  - Or more likely: `SELECT style_id, name, . . .` (omitting product_id) `FROM full_style WHERE product_id = 1`
+- Query time using the materialized view, however shot up to `830ms`. This is vs. `33ms` taken by the unmaterialized query.
+  - Is it possible to index a materialized view?

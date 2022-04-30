@@ -20,14 +20,15 @@ const getFeaturesByProductId = (productId) => {
     .then((result) => result.rows);
 };
 
-const getPhotosByStyleId = (styleId) => {
-  const query = {
-    text: 'SELECT thumbnail_url, url from photos WHERE style_id = $1',
-    values: [styleId],
-  };
-  return db.query(query)
-    .then((result) => result.rows);
-};
+// Obsoleted:
+// const getPhotosByStyleId = (styleId) => {
+//   const query = {
+//     text: 'SELECT thumbnail_url, url from photos WHERE style_id = $1',
+//     values: [styleId],
+//   };
+//   return db.query(query)
+//     .then((result) => result.rows);
+// };
 
 const getSkusByStyleId = (styleId) => {
   const query = {
@@ -52,14 +53,16 @@ const getSkusByStyleId = (styleId) => {
 
 const getStyleById = (styleId) => {
   const query = {
-    text: `SELECT id AS style_id, name, original_price, sale_price,
-      default_style AS "default?" from styles WHERE id = $1`,
+    text: `
+    SELECT id AS style_id, name, original_price, sale_price, default_style AS "default?",
+      (SELECT json_agg(ph)
+        FROM (SELECT url, thumbnail_url FROM photos WHERE style_id = s.id) as ph) AS photos
+      FROM styles AS s WHERE id = $1`,
     values: [styleId],
   };
   return Promise.all([
     db.query(query),
     getSkusByStyleId(styleId),
-    getPhotosByStyleId(styleId),
   ])
     .then((results) => {
       const style = {
@@ -79,24 +82,26 @@ const getStylesByProductId = (productId) => {
   // For slow version: Need to build the style object here
   // using additional queries to photos and skus
   const query = {
-    text: 'SELECT id FROM styles WHERE product_id = $1',
+    text: `
+    SELECT
+      id AS "style_id",
+      name,
+      original_price,
+      sale_price,
+      default_style AS "default?",
+      (SELECT json_object_agg(id, json_build_object('quantity', quantity, 'size', size))
+        FROM skus WHERE style_id = s.id) AS skus,
+      (SELECT json_agg(ph)
+        FROM (SELECT url, thumbnail_url FROM photos WHERE style_id = s.id) AS ph) AS photos
+      FROM styles AS s WHERE s.product_id = $1`,
     values: [productId],
-    rowMode: 'array',
   };
   return db.query(query)
     // eslint-disable-next-line arrow-body-style
     .then((result) => {
-      // console.log('[PRODUCT MODEL]: Style IDs:', result.rows);
-      // rows -> [ [ 26 ], [ 27 ], [ 28 ], [ 29 ] ] -> need to destructure
-      return Promise.all(result.rows.map(([id]) => getStyleById(id)))
-        .then((results) => {
-          const styles = {
-            product_id: productId,
-            results,
-          };
-          // console.log('[PRODUCT MODEL]: Got styles', styles);
-          return styles;
-        });
+      const styles = { product_id: productId, results: result.rows };
+      // console.log('[PRODUCT MODEL]: Styles', styles);
+      return styles;
     })
     .catch((err) => {
       console.log('[PRODUCT MODEL]:', err);
