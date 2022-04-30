@@ -10,7 +10,9 @@
     "scale": "pm2 scale product +1",
     "lb": "pm2 start server/loadbalancer.js",
     "stop": "pm2 stop all",
-    "status": "pm2 monit"
+    "restart": "pm2 restart all",
+    "status": "pm2 monit",
+    "sync": "pm2 save"
   },
   "repository": {
     "type": "git",

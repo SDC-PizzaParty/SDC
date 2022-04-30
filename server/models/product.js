@@ -67,7 +67,7 @@ const getStyleById = (styleId) => {
   return db.query(query)
     .then((results) => {
       const style = results.rows[0];
-      console.log('[PRODUCT MODEL] Style:', style);
+      // console.log('[PRODUCT MODEL] Style:', style);
       return style;
     })
     .catch((err) => {
@@ -115,7 +115,7 @@ const getProductById = (productId) => {
   return db.query(query)
     .then((results) => {
       const product = results.rows[0];
-      console.log('[PRODUCT MODEL]: Product:', product);
+      // console.log('[PRODUCT MODEL]: Product:', product);
       return product;
     })
     .catch((err) => {
@@ -124,21 +124,14 @@ const getProductById = (productId) => {
     });
 };
 
-/*
-SELECT id, name, slogan, description, category, default_price,
-  (SELECT json_agg(ft)
-    FROM (SELECT feature, value FROM features WHERE product_id = p.id) AS ft) AS features
-  FROM product AS p WHERE p.id = 1;
-*/
-
 const getProducts = (page = 1, count = 5) => {
-  const lowerLimit = (page * count) - count + 1;
-  const upperLimit = (page * count);
-  // console.log(`[PRODUCT MODEL]: Getting ids >= ${lowerLimit} and <= ${upperLimit}`);
+  const lowerBound = count * (page - 1);
+  const limit = count;
+  // console.log(`[PRODUCT MODEL]: Getting ids > ${lowerBound} Limit: ${upperLimit}`);
   const query = {
     text: `SELECT id, name, slogan, description, category, default_price
-      FROM product WHERE id >= $1 AND id <= $2`,
-    values: [lowerLimit, upperLimit],
+      FROM product WHERE id > $1 LIMIT $2`,
+    values: [lowerBound, limit],
   };
   return db.query(query)
     .then((results) => results.rows);
