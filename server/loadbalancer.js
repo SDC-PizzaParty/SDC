@@ -8,8 +8,8 @@ const API_URLS = [];
 
 (() => {
   let num = 1;
-  while (process.env[`PRODUCT_API_${num}`]) {
-    API_URLS.push(process.env[`PRODUCT_API_${num}`]);
+  while (process.env[`SERVICE_${num}`]) {
+    API_URLS.push(process.env[`SERVICE_${num}`]);
     num += 1;
   }
 })();

@@ -578,3 +578,7 @@ style: {
 
 ## Im going to use PGAdmin to structure my query
 Trying to figure out how to use json creation functions is kind of ridiculous using only the command line. I got a demo of pgAdmin and it looks like it could be extremely helpful.
+
+## Config
+My env file has grown a lot throughout the course of this project. I am learning a lot aboud configuration and when to store things within the environment.
+- [ ] Configure a way to verify loader IO easily

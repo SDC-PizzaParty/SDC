@@ -4,7 +4,7 @@ const express = require('express');
 const models = require('../models');
 
 const app = express();
-const PORT = process.env.PRODUCT_PORT;
+const PORT = process.env.SERVICE_PORT;
 let beep = 0;
 
 const boop = (text = '') => {
