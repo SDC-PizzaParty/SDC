@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 require('dotenv').config();
 
-const fs = require('fs/promises');
+const fs = require('fs');
 const ip = require('ip').address();
 
 if (process.env.MODE === 'LB') {
@@ -19,11 +19,11 @@ if (process.env.MODE === 'LB') {
 
 if (process.env.LOADER_IO) {
   const filename = `loader/${process.env.LOADER_IO}.txt`;
-  fs.writeFile(filename, process.env.LOADER_IO)
-    .then(() => {
-      console.log('Loader.io config loaded');
-    })
-    .catch((err) => {
+  fs.writeFile(filename, process.env.LOADER_IO, (err) => {
+    if (err) {
       console.log('Error loading Loader.io key:', err);
-    });
+    } else {
+      console.log('Loader.io config loaded');
+    }
+  });
 }
