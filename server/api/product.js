@@ -12,6 +12,8 @@ const boop = (text = '') => {
   if (beep === 1000) { console.log('boop', text); }
 };
 
+app.use(express.static('loader'));
+
 // Individual style getter:
 app.get('/products/style/:styleId', (req, res) => {
   // console.log('\n[PRODUCT] Request for style:', req.params.styleId);
