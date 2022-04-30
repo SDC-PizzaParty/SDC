@@ -16,3 +16,4 @@ seed_data/
 db.sql
 
 loader/*.txt
+static/*.txt

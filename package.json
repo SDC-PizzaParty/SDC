@@ -1,12 +1,14 @@
 {
   "name": "rfp2202-pizza-party",
   "version": "1.0.0",
-  "description": "FEC project",
+  "description": "SDC project",
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "pm2 start server",
+    "service": "pm2 start server/api/product.js",
     "cluster": "pm2 start server/api/product.js -i 2",
+    "scale": "pm2 scale product +1",
+    "lb": "pm2 start server/loadbalancer.js",
     "stop": "pm2 stop all",
     "status": "pm2 monit"
   },
@@ -24,7 +26,6 @@
     "axios": "^0.26.1",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
-    "ip": "^1.1.5",
     "pg": "^8.7.3",
     "pm2": "^5.2.0"
   },

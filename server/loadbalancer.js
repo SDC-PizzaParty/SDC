@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 require('dotenv').config();
+require('./index'); // Configuration
 const express = require('express');
 const axios = require('axios');
 
@@ -14,11 +15,11 @@ const API_URLS = [];
   }
 })();
 
-console.log('[Load Balancer] Routes:', API_URLS);
+console.log('[LOAD BALANCER] Routes:', API_URLS);
 
 let currentServer = 0;
 
-app.use(express.static('loader'));
+app.use(express.static('static'));
 
 app.use('/products', (req, res) => {
   const url = API_URLS[currentServer] + req.originalUrl;
@@ -31,11 +32,16 @@ app.use('/products', (req, res) => {
       res.send(data);
     })
     .catch((err) => {
-      console.log(err);
+      console.log('[LOAD BALANCER] Error from:', url, err);
     });
   // Switch the server:
   currentServer = currentServer === (API_URLS.length - 1) ? 0 : currentServer + 1;
 });
 
+app.get('/', (req, res) => {
+  console.log('[LOAD BALANCER] Incoming request from:', req.ip);
+  res.send('Pizza Product API LB');
+});
+
 app.listen(process.env.LB_PORT);
-console.log('[Load balancer] Listening on:', process.env.LB_PORT);
+console.log('[LOAD BALANCER] Listening on:', process.env.LB_PORT);

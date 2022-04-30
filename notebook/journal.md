@@ -563,7 +563,6 @@ style: {
 - Plug in my load balancer
 - It would be nice to add more unit/integration tests
 
-
 # 4/29/22
 
 ## Load balancer was a success
@@ -640,3 +639,15 @@ AS
   - Or more likely: `SELECT style_id, name, . . .` (omitting product_id) `FROM full_style WHERE product_id = 1`
 - Query time using the materialized view, however shot up to `830ms`. This is vs. `33ms` taken by the unmaterialized query.
   - Is it possible to index a materialized view?
+
+  # 4/30/22
+
+  ## Node-Load: budget load balancer:
+  - ~~In `.env` set the `MODE` variable to `LB`~~
+  - In the `SERVICE_#` variables input an incrementing number and set the variable to the service endpoint.
+    - Scale by entering more `SERVICE_n` variables
+  - Run `npm run lb` to start the load balancer mode
+
+## Changing over to PM2 for running services
+- `pm2 monit` provides a cool view to see the logs and memory usage but I need to specify the app I want to run specifically (vs just specifying the directory and running index.js)
+- run either `npm run lb` for load balancer or `npm run service` for service

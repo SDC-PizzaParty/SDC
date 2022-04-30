@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 require('dotenv').config();
+require('../index'); // Configuration
 const express = require('express');
 const models = require('../models');
 
@@ -12,11 +13,10 @@ const boop = (text = '') => {
   if (beep === 1000) { console.log('boop', text); }
 };
 
-app.use(express.static('loader'));
+app.use(express.static('static'));
 
 // Individual style getter:
 app.get('/products/style/:styleId', (req, res) => {
-  // console.log('\n[PRODUCT] Request for style:', req.params.styleId);
   models.product.getStyleById(req.params.styleId)
     .then((style) => {
       res.send(JSON.stringify(style));
@@ -25,7 +25,6 @@ app.get('/products/style/:styleId', (req, res) => {
 
 // Get all styles of a product:
 app.get('/products/:productId/styles', (req, res) => {
-  // console.log('\n[PRODUCT] Request for styles from product:', req.params.productId);
   boop('style');
   models.product.getStylesByProductId(req.params.productId)
     .then((styles) => {
@@ -35,7 +34,6 @@ app.get('/products/:productId/styles', (req, res) => {
 
 // Get all related items of a product:
 app.get('/products/:productId/related', (req, res) => {
-  // console.log('\n[PRODUCT] Request for related items for product:', req.params.productId);
   models.product.getRelatedByProductId(req.params.productId)
     .then((items) => {
       res.send(JSON.stringify(items));
@@ -44,27 +42,25 @@ app.get('/products/:productId/related', (req, res) => {
 
 // Get the entire product object:
 app.get('/products/:productId', (req, res) => {
-  // console.log('\n[PRODUCT] Request for product:', req.params.productId);
+  boop('product');
   models.product.getProductById(req.params.productId)
     .then((product) => {
       res.send(JSON.stringify(product));
     });
-  boop('product');
 });
 
-app.use('/products', (req, res) => {
+app.get('/products', (req, res) => {
+  boop();
   const { count, page } = req.query;
-  // console.log('[PRODUCT]: Request for products:', count, page);
   models.product.getProducts(page, count)
     .then((products) => {
       res.send(JSON.stringify(products));
     });
-  boop();
 });
 
 app.use('/', (req, res) => {
   console.log('[PRODUCT]: Incoming request from routing server:', req.url);
-  res.send('Response from Product API');
+  res.send('Pizza Product API');
 });
 
 app.listen(PORT);
