@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "service": "pm2 start server/api/product.js",
-    "cluster": "pm2 start server/api/product.js -i 2",
+    "service": "pm2 start server/api/product.js & pm2 monit",
+    "cluster": "pm2 start server/api/product.js -i 2 & pm2 monit",
     "scale": "pm2 scale product +1",
-    "lb": "pm2 start server/loadbalancer.js",
+    "lb": "pm2 start server/loadbalancer.js & pm2 monit",
     "stop": "pm2 stop all",
     "restart": "pm2 restart all",
     "status": "pm2 monit",
