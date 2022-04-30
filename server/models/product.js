@@ -11,14 +11,15 @@ const getRelatedByProductId = (productId) => {
     .then((result) => result.rows.flat());
 };
 
-const getFeaturesByProductId = (productId) => {
-  const query = {
-    text: 'SELECT feature, value FROM features WHERE product_id = $1',
-    values: [productId],
-  };
-  return db.query(query)
-    .then((result) => result.rows);
-};
+// Obsoleted:
+// const getFeaturesByProductId = (productId) => {
+//   const query = {
+//     text: 'SELECT feature, value FROM features WHERE product_id = $1',
+//     values: [productId],
+//   };
+//   return db.query(query)
+//     .then((result) => result.rows);
+// };
 
 // Obsoleted:
 // const getPhotosByStyleId = (styleId) => {
@@ -30,47 +31,43 @@ const getFeaturesByProductId = (productId) => {
 //     .then((result) => result.rows);
 // };
 
-const getSkusByStyleId = (styleId) => {
-  const query = {
-    text: 'SELECT * from skus WHERE style_id = $1',
-    values: [styleId],
-  };
-  const skus = {};
-  return db.query(query)
-    .then((results) => {
-      results.rows.forEach((e) => {
-        skus[e.id] = {
-          quantity: e.quantity,
-          size: e.size,
-        };
-      });
-      return { skus };
-    })
-    .catch((err) => {
-      console.log('[PRODUCT MODEL]:', err);
-    });
-};
+// Obsoleted:
+// const getSkusByStyleId = (styleId) => {
+//   const query = {
+//     text: 'SELECT * from skus WHERE style_id = $1',
+//     values: [styleId],
+//   };
+//   const skus = {};
+//   return db.query(query)
+//     .then((results) => {
+//       results.rows.forEach((e) => {
+//         skus[e.id] = {
+//           quantity: e.quantity,
+//           size: e.size,
+//         };
+//       });
+//       return { skus };
+//     })
+//     .catch((err) => {
+//       console.log('[PRODUCT MODEL]:', err);
+//     });
+// };
 
 const getStyleById = (styleId) => {
   const query = {
     text: `
     SELECT id AS style_id, name, original_price, sale_price, default_style AS "default?",
+      (SELECT json_object_agg(id, json_build_object('quantity', quantity, 'size', size))
+          FROM skus WHERE style_id = s.id) AS skus,
       (SELECT json_agg(ph)
         FROM (SELECT url, thumbnail_url FROM photos WHERE style_id = s.id) as ph) AS photos
       FROM styles AS s WHERE id = $1`,
     values: [styleId],
   };
-  return Promise.all([
-    db.query(query),
-    getSkusByStyleId(styleId),
-  ])
+  return db.query(query)
     .then((results) => {
-      const style = {
-        ...results[0].rows[0],
-        ...results[1],
-        photos: results[2],
-      };
-      // console.log('[PRODUCT MODEL] Style:', style);
+      const style = results.rows[0];
+      console.log('[PRODUCT MODEL] Style:', style);
       return style;
     })
     .catch((err) => {
@@ -79,8 +76,6 @@ const getStyleById = (styleId) => {
 };
 
 const getStylesByProductId = (productId) => {
-  // For slow version: Need to build the style object here
-  // using additional queries to photos and skus
   const query = {
     text: `
     SELECT
@@ -110,19 +105,17 @@ const getStylesByProductId = (productId) => {
 
 const getProductById = (productId) => {
   const query = {
-    text: 'SELECT * FROM product WHERE id = $1',
+    text: `
+    SELECT id, name, slogan, description, category, default_price,
+      (SELECT json_agg(ft)
+        FROM (SELECT feature, value FROM features WHERE product_id = p.id) AS ft) AS features
+    FROM product AS p WHERE p.id = $1;`,
     values: [productId],
   };
-  return Promise.all([
-    db.query(query),
-    getFeaturesByProductId(productId),
-  ])
+  return db.query(query)
     .then((results) => {
-      const product = {
-        ...results[0].rows[0],
-        features: results[1],
-      };
-      // console.log('[PRODUCT MODEL]: Product:', product);
+      const product = results.rows[0];
+      console.log('[PRODUCT MODEL]: Product:', product);
       return product;
     })
     .catch((err) => {
@@ -130,6 +123,13 @@ const getProductById = (productId) => {
       return err;
     });
 };
+
+/*
+SELECT id, name, slogan, description, category, default_price,
+  (SELECT json_agg(ft)
+    FROM (SELECT feature, value FROM features WHERE product_id = p.id) AS ft) AS features
+  FROM product AS p WHERE p.id = 1;
+*/
 
 const getProducts = (page = 1, count = 5) => {
   const lowerLimit = (page * count) - count + 1;
