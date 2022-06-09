@@ -7,10 +7,11 @@ dist/
 
 *.map
 
-package-lock.json
-
 sample_data/
 
 seed_data/
 
-notebook/
+db.sql
+
+loader/*.txt
+static/*.txt

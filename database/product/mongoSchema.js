@@ -26,7 +26,8 @@ style: {
   original_price: Number,
   sale_price: Number,
   default: Boolean,
-  photos: Array
+  photos: Array,
+  skus: Array,
 }
 
 photos: {

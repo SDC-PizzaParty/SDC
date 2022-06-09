@@ -1,13 +1,18 @@
 {
   "name": "rfp2202-pizza-party",
   "version": "1.0.0",
-  "description": "FEC project",
+  "description": "SDC project",
   "main": "index.js",
   "scripts": {
-    "test": "test",
-    "start": "npx nodemon server",
-    "seed-product-db": "psql -d sdc -f database/products/products.sql",
-    "start:db": "psql sdc"
+    "test": "jest",
+    "service": "pm2 start server/api/product.js & pm2 monit",
+    "cluster": "pm2 start server/api/product.js -i 2 & pm2 monit",
+    "scale": "pm2 scale product +1",
+    "lb": "pm2 start server/loadbalancer.js & pm2 monit",
+    "stop": "pm2 stop all",
+    "restart": "pm2 restart all",
+    "status": "pm2 monit",
+    "sync": "pm2 save"
   },
   "repository": {
     "type": "git",
@@ -23,11 +28,16 @@
     "axios": "^0.26.1",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
-    "pg": "^8.7.3"
+    "pg": "^8.7.3",
+    "pm2": "^5.2.0"
   },
   "devDependencies": {
     "eslint": "^8.13.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.26.0"
+    "eslint-plugin-import": "^2.26.0",
+    "jest": "^27.5.1",
+    "k6": "^0.0.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6"
   }
 }
